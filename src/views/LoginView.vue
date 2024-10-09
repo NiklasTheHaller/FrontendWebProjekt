@@ -1,28 +1,49 @@
 <template>
-	<h1>{{ header }}</h1>
-	<div>
-		<label for="email">Email: </label>
-		<input v-model="emailValue" type="text" name="email" id="password" />
-	</div>
+	<div class="login-view">
+		<h1>{{ header }}</h1>
 
-	<div>
-		<label for="password">Password: </label>
-		<input v-model="passwordValue" type="text" name="password" id="password" />
-	</div>
+		<form id="loginForm">
+			<!-- Using FormInput for Email -->
+			<FormInput
+				id="email"
+				labelText="Email"
+				v-model="emailValue"
+				type="text" />
 
-	<div>
-		<input type="checkbox" class="form-check-input" id="rememberme" />
-		<label class="form-check-label" for="exampleCheck1">Remember me</label>
-	</div>
+			<!-- Using FormInput for Password -->
+			<FormInput
+				id="password"
+				labelText="Password"
+				v-model="passwordValue"
+				type="password" />
 
-	<button v-on:click="loginUser" id="submit" type="submit">Sign in</button>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="rememberme" />
+				<BaseLabel :htmlFor="'rememberme'" text="Remember me" />
+				<!-- Updated prop -->
+			</div>
+
+			<!-- Using the BaseButton -->
+			<BaseButton class="base-button" type="primary" @click="loginUser"
+				>Sign in</BaseButton
+			>
+		</form>
+	</div>
 </template>
 
 <script>
 import { ref } from 'vue';
+import FormInput from '../components/molecules/FormInput.vue';
+import BaseButton from '../components/atoms/BaseButton.vue';
+import BaseLabel from '../components/atoms/BaseLabel.vue'; // Ensure usage
 
 export default {
 	name: 'LoginView',
+	components: {
+		FormInput,
+		BaseButton,
+		BaseLabel, // Now used in the template
+	},
 	setup() {
 		const header = ref('Login');
 		const emailValue = ref('');
@@ -35,7 +56,6 @@ export default {
 
 		const loginUser = (event) => {
 			event.preventDefault();
-			console.log('Button Clicked');
 
 			const user = dummyData.value.find(
 				(user) =>
@@ -57,6 +77,16 @@ export default {
 			loginUser,
 		};
 	},
-	components: {},
 };
 </script>
+
+<style scoped>
+form {
+	max-width: 420px;
+	margin: 30px auto;
+	background: white;
+	text-align: left;
+	padding: 40px;
+	border-radius: 10px;
+}
+</style>

@@ -1,8 +1,12 @@
 <template>
 	<h2>{{ header }}</h2>
 	<form id="registrationForm">
-		<label for="salutation">Salutation:</label>
-		<select v-model="salutationValue" id="salutation" name="salutation">
+		<BaseLabel for="salutation" text="Salutation:" />
+		<select
+			v-model="salutationValue"
+			id="salutation"
+			name="salutation"
+			required>
 			<option value="male">Male</option>
 			<option value="female">Female</option>
 			<option value="other">Other</option>
@@ -13,22 +17,28 @@
 			<input v-model="otherFieldValue" type="text" id="other" name="other" />
 		</div>
 
-		<label for="email">Email:</label>
-		<input v-model="emailValue" type="email" id="email" name="email" required />
+		<FormInput
+			id="email"
+			labelText="Email:"
+			v-model="emailValue"
+			type="email"
+			name="email"
+			required
+			placeholder="example@domain.com" />
 
-		<label for="password">Password:</label>
-		<input
+		<FormInput
+			id="password"
+			labelText="Password:"
 			v-model="passwordValue"
 			type="password"
-			id="password"
 			name="password"
 			required />
 
-		<label for="repeatPassword">Repeat Password:</label>
-		<input
+		<FormInput
+			id="repeatPassword"
+			labelText="Repeat Password:"
 			v-model="repeatPasswordValue"
 			type="password"
-			id="repeatPassword"
 			name="repeatPassword"
 			required />
 
@@ -39,16 +49,27 @@
 			<option value="uk">United Kingdom</option>
 			<option value="au">Australia</option>
 			<option value="other">Other</option>
+			required
 		</select>
 
-		<button v-on:click="registerUser" type="submit">Register</button>
+		<BaseButton class="base-button" type="primary" v-on:click="registerUser"
+			>Register</BaseButton
+		>
 	</form>
 </template>
 
 <script>
+import FormInput from '@/components/molecules/FormInput.vue';
+import BaseLabel from '@/components/atoms/BaseLabel.vue';
 import { ref, watch } from 'vue';
+import BaseButton from '@/components/atoms/BaseButton.vue';
 export default {
 	name: 'RegistrationView',
+	components: {
+		BaseLabel,
+		FormInput,
+		BaseButton,
+	},
 	setup() {
 		const header = ref('Registration');
 		const salutationValue = ref('');
@@ -57,17 +78,7 @@ export default {
 		const repeatPasswordValue = ref('');
 		const countryValue = ref('');
 		const otherFieldActive = ref(false);
-
-		/*
-		const toggleOtherField = () => {
-			if (salutationValue.value === 'other') {
-				otherFieldActive.value = true;
-			} else {
-				otherFieldActive.value = false;
-			}
-		};
-
-        */
+		const otherFieldValue = ref('');
 
 		watch(salutationValue, (newValue) => {
 			otherFieldActive.value = newValue === 'other';
@@ -75,6 +86,17 @@ export default {
 
 		const registerUser = (event) => {
 			event.preventDefault();
+
+			const user = {
+				salutation: salutationValue.value,
+				email: emailValue.value,
+				password: passwordValue.value,
+				repeatPassword: repeatPasswordValue.value,
+				country: countryValue.value,
+				other: otherFieldValue.value,
+			};
+
+			console.log(user);
 		};
 
 		return {
@@ -83,10 +105,21 @@ export default {
 			passwordValue,
 			repeatPasswordValue,
 			countryValue,
-			// toggleOtherField,
 			otherFieldActive,
+			otherFieldValue,
 			registerUser,
 		};
 	},
 };
 </script>
+
+<style scoped>
+form {
+	max-width: 420px;
+	margin: 30px auto;
+	background: white;
+	text-align: left;
+	padding: 40px;
+	border-radius: 10px;
+}
+</style>
