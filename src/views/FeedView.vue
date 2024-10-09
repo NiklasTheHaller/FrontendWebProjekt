@@ -7,8 +7,8 @@
       <ul>
         <li v-for="post in posts" :key="post.id" class="post">
           <h3>{{ post.title }}</h3>
-          <p>{{ post.content }}</p>
-          <p><em>By {{ post.author }} on {{ post.created_at }}</em></p>
+          <p>{{ post.body }}</p>
+          <p><em>By User ID: {{ post.userId }}</em></p> <!-- Displaying userId directly -->
         </li>
       </ul>
     </div>
@@ -29,31 +29,6 @@ export default defineComponent({
     const authStore = useAuthStore();
     const posts = ref([]); // Reactive reference for posts
 
-    // Sample posts data
-    const samplePosts = [
-      {
-        id: 1,
-        title: 'First Post',
-        content: 'This is the content of the first post.',
-        author: 'User1',
-        created_at: '2024-10-01',
-      },
-      {
-        id: 2,
-        title: 'Second Post',
-        content: 'This is the content of the second post.',
-        author: 'User2',
-        created_at: '2024-10-05',
-      },
-      {
-        id: 3,
-        title: 'Third Post',
-        content: 'This is the content of the third post.',
-        author: 'User3',
-        created_at: '2024-10-08',
-      },
-    ];
-
     // Check authentication state when this component is mounted
     onMounted(() => {
       authStore.checkAuth();
@@ -62,11 +37,12 @@ export default defineComponent({
 
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('/api/posts'); // Replace with your API endpoint
-        posts.value = response.data; // Assuming your API returns an array of posts
+        // Use JSONPlaceholder API for posts
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        posts.value = response.data; // Assuming the API returns an array of posts
       } catch (error) {
         console.error('Failed to fetch posts, using sample data.', error);
-        posts.value = samplePosts; // Fallback to sample data
+        posts.value = []; // Optional: can keep sample posts as fallback if desired
       }
     };
 
