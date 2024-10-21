@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <h1>Feed</h1>
-    <p>Welcome to your feed!</p>
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Feed</h1>
+    <p class="text-gray-600 mb-8 text-center">Welcome to your feed!</p>
     <div v-if="posts.length">
-      <h2>Posts:</h2>
-      <ul>
-        <li v-for="post in posts" :key="post.id" class="post">
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.body }}</p>
-          <p><em>By User ID: {{ post.userId }}</em></p> <!-- Displaying userId directly -->
+      <h2 class="text-2xl font-semibold mb-4">Posts:</h2>
+      <ul class="space-y-4">
+        <li v-for="post in posts" :key="post.id" class="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ post.title }}</h3>
+          <p class="text-gray-700 mb-4">{{ post.body }}</p>
+          <p class="text-sm text-gray-500"><em>By User ID: {{ post.userId }}</em></p>
         </li>
       </ul>
     </div>
     <div v-else>
-      <p>No posts available.</p>
+      <p class="text-center text-gray-500">No posts available.</p>
     </div>
   </div>
 </template>
@@ -50,11 +50,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.post {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-</style>
