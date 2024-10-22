@@ -13,6 +13,10 @@
     <router-link to="/feed">Feed</router-link>
     |
     <router-link to="/admin">AdminDashboard</router-link>
+    |
+    <router-link to="/help">Help</router-link>
+    |
+    <router-link to="/imprint">Imprint</router-link>
   </nav>
 
   <!-- Role switcher buttons for testing -->

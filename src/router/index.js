@@ -9,12 +9,24 @@ const RegistrationView = () => import('../views/RegistrationView.vue');
 const ProfileView = () => import('../views/ProfileView.vue');
 const FeedView = () => import('../views/FeedView.vue');
 const AdminDashboardView = () => import('../views/AdminDashboardView.vue');
+const ImprintView = () => import('../views/ImprintView.vue')
+const HelpView = () => import('../views/HelpView.vue')
 
 const routes = [
     {
         path: '/',
         name: 'home',
         component: HomeView,
+    },
+    {
+        path: '/imprint',
+        name: 'Imprint',
+        component: ImprintView,
+    },
+    {
+        path: '/help',
+        name: 'Help',
+        component: HelpView,
     },
     {
         path: '/about',
