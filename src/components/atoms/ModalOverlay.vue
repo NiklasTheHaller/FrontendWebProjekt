@@ -1,5 +1,6 @@
 <template>
-	<div class="modal-overlay">
+	<div
+		class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 		<slot></slot>
 	</div>
 </template>
@@ -10,16 +11,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.modal-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-</style>
+<style scoped></style>

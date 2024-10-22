@@ -1,5 +1,7 @@
 <template>
-	<label :for="htmlFor">{{ text }}</label>
+	<label :for="htmlFor" class="block text-sm font-medium text-gray-700">{{
+		text
+	}}</label>
 </template>
 
 <script>
@@ -7,7 +9,6 @@ export default {
 	name: 'BaseLabel',
 	props: {
 		htmlFor: {
-			// Renamed prop
 			type: String,
 			required: true,
 		},
@@ -19,14 +20,4 @@ export default {
 };
 </script>
 
-<style scoped>
-label {
-	color: #aaa;
-	display: inline-block;
-	margin: 25px 0 15px;
-	font-size: 0.6em;
-	text-transform: uppercase;
-	letter-spacing: 1px;
-	font-weight: bold;
-}
-</style>
+<style scoped></style>
