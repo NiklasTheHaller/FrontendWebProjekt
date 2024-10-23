@@ -1,6 +1,5 @@
 <template>
-	<div class="about">
-		<h1>This is an about page</h1>
+	<div>
 		<!-- Button to open the modal -->
 		<BaseButton type="button" @click="openModal">Open Modal</BaseButton>
 
@@ -16,8 +15,8 @@
 </template>
 
 <script>
-import ReusableModal from '../components/molecules/ReusableModal.vue';
-import BaseButton from '../components/atoms/BaseButton.vue';
+import ReusableModal from '../molecules/ReusableModal.vue';
+import BaseButton from '../atoms/BaseButton.vue';
 
 export default {
 	components: {
@@ -41,3 +40,5 @@ export default {
 	},
 };
 </script>
+
+<style></style>

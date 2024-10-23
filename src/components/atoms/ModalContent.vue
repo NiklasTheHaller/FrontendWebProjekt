@@ -1,5 +1,5 @@
 <template>
-	<div class="modal">
+	<div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full">
 		<slot></slot>
 	</div>
 </template>
@@ -10,16 +10,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.modal {
-	background: white;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	text-align: center;
-}
-
-button {
-	margin-top: 10px;
-}
-</style>
+<style scoped></style>

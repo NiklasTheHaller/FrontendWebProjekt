@@ -1,12 +1,13 @@
 <template>
-	<div class="form-input">
+	<div class="mb-6">
 		<BaseLabel :htmlFor="id" :text="labelText" />
-		<!-- Updated prop -->
 		<Input
 			:id="id"
 			:type="type"
-			v-model="inputValue"
-			:placeholder="placeholder" />
+			:value="modelValue"
+			@update:modelValue="updateValue"
+			:placeholder="placeholder"
+			class="mt-1" />
 	</div>
 </template>
 
@@ -17,7 +18,7 @@ import Input from '@/components/atoms/BaseInput.vue';
 export default {
 	name: 'FormInput',
 	components: {
-		BaseLabel, // Updated component name
+		BaseLabel,
 		Input,
 	},
 	props: {
@@ -34,23 +35,18 @@ export default {
 			default: 'text',
 		},
 		modelValue: {
+			// This is for v-model binding
 			type: [String, Number],
 			default: '',
 		},
 		placeholder: {
-			type: String,
-			Number,
+			type: [String, Number],
 			default: '',
 		},
 	},
-	data() {
-		return {
-			inputValue: this.modelValue,
-		};
-	},
-	watch: {
-		inputValue(newValue) {
-			this.$emit('update:modelValue', newValue);
+	methods: {
+		updateValue(value) {
+			this.$emit('update:modelValue', value); // Emit value changes to parent
 		},
 	},
 };
@@ -58,6 +54,6 @@ export default {
 
 <style scoped>
 .form-input {
-	margin-bottom: 24px;
+	margin-bottom: 1.5rem;
 }
 </style>
