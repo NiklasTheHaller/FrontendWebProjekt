@@ -1,16 +1,16 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link>
-    |
-    <router-link to="/about">About</router-link>
+    <router-link to="/feed">Feed</router-link>
     |
     <router-link to="/profile">Profile</router-link>
     |
-    <router-link to="/feed">Feed</router-link>
+    <router-link to="/about">About</router-link>
     |
     <router-link to="/help">Help</router-link>
     |
     <router-link to="/imprint">Imprint</router-link>
+
+
 
     <!-- Show AdminDashboard only if the user is an admin -->
     <template v-if="isAdmin">

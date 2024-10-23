@@ -1,7 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import {useAuthStore} from '../store/authStore';
-
-import HomeView from '../views/HomeView.vue';
+import {useAuthStore} from '@/store/authStore';
 
 const AboutView = () => import('../views/AboutView.vue');
 const LoginView = () => import('../views/LoginView.vue');
@@ -13,11 +11,6 @@ const ImprintView = () => import('../views/ImprintView.vue')
 const HelpView = () => import('../views/HelpView.vue')
 
 const routes = [
-    {
-        path: '/',
-        name: 'home',
-        component: HomeView,
-    },
     {
         path: '/imprint',
         name: 'Imprint',
