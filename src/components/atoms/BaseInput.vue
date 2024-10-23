@@ -1,31 +1,44 @@
 <template>
-	<input
-		:value="value"
-		:placeholder="placeholder"
-		@input="updateValue"
-		type="text"
-		class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-300" />
+  <input
+      :id="id"
+      :type="type"
+      :value="modelValue"
+  @input="$emit('update:modelValue', $event.target.value)"
+  :placeholder="placeholder"
+  class="base-input"
+  />
 </template>
 
 <script>
 export default {
-	name: 'BaseInput',
-	props: {
-		value: {
-			type: String,
-			required: true,
-		},
-		placeholder: {
-			type: String,
-			default: '',
-		},
-	},
-	methods: {
-		updateValue(event) {
-			this.$emit('input', event.target.value);
-		},
-	},
+  name: 'BaseInput',
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      default: 'text',
+    },
+    modelValue: {
+      type: [String, Number],
+      default: '',
+    },
+    placeholder: {
+      type: [String, Number],
+      default: '',
+    },
+  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.base-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>

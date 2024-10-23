@@ -1,102 +1,126 @@
 <template>
-	<div class="login-view">
-		<h1>{{ header }}</h1>
+  <div class="login-view">
+    <h1>{{ header }}</h1>
 
-		<form id="loginForm" @submit.prevent="loginUser">
-			<!-- Using FormInput for Email -->
-			<FormInput
-				id="email"
-				labelText="Email"
-				v-model="emailValue"
-				type="email" />
+    <form id="loginForm" @submit.prevent="loginUser">
+      <!-- Using FormInput for Email -->
+      <FormInput
+          id="email"
+          labelText="Email"
+          v-model="emailValue"
+          type="email"
+          placeholder="Enter your email"
+      />
 
-			<!-- Using FormInput for Password -->
-			<FormInput
-				id="password"
-				labelText="Password"
-				v-model="passwordValue"
-				type="password" />
+      <!-- Using FormInput for Password -->
+      <FormInput
+          id="password"
+          labelText="Password"
+          v-model="passwordValue"
+          type="password"
+          placeholder="Enter your password"
+      />
 
-			<div class="form-check">
-				<input
-					type="checkbox"
-					class="form-check-input"
-					id="rememberme"
-					v-model="rememberMe" />
+      <div class="form-check">
+        <input
+            type="checkbox"
+            class="form-check-input"
+            id="rememberme"
+            v-model="rememberMe"
+        />
 
-				<BaseLabel :htmlFor="'rememberme'" text="Remember me" />
-			</div>
+        <BaseLabel :htmlFor="'rememberme'" text="Remember me" />
+      </div>
 
-			<!-- Using the BaseButton -->
-			<BaseButton class="base-button" type="submit"> Sign in </BaseButton>
-			<p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-		</form>
-	</div>
+      <!-- Using the BaseButton -->
+      <BaseButton class="base-button" type="submit">Sign in</BaseButton>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </form>
+  </div>
 </template>
 
 <script>
+import FormInput from '@/components/molecules/FormInput.vue';
+import BaseButton from '@/components/atoms/BaseButton.vue';
 import { ref } from 'vue';
-import FormInput from '../components/molecules/FormInput.vue';
-import BaseButton from '../components/atoms/BaseButton.vue';
-import BaseLabel from '../components/atoms/BaseLabel.vue'; // Ensure usage (new line)
+import { useAuthStore } from '@/store/authStore'; // Import auth store
+import { useUserStore } from '@/store/userStore'; // Import user store
+import { useRouter } from 'vue-router';
+import BaseLabel from "@/components/atoms/BaseLabel.vue";
 
 export default {
-	name: 'LoginView',
-	components: {
-		FormInput,
-		BaseButton,
-		BaseLabel,
-	},
-	setup() {
-		const header = ref('Login');
-		const emailValue = ref('');
-		const passwordValue = ref('');
-		const rememberMe = ref(false);
-		const errorMessage = ref('');
+  name: 'LoginView',
+  components: {
+    BaseLabel,
+    FormInput,
+    BaseButton,
+  },
+  setup() {
+    const authStore = useAuthStore(); // Access the auth store
+    const userStore = useUserStore(); // Access the user store
+    const router = useRouter(); // Access the router
 
-		// Dummy data for login
-		const dummyData = ref([
-			{ email: 'jon@gmail.com', password: 'password', id: 1 },
-			{ email: 'jack@gmail.com', password: 'hello123', id: 2 },
-		]);
+    const emailValue = ref('');
+    const passwordValue = ref('');
+    const rememberMe = ref(false); // Track the 'Remember me' checkbox state
+    const errorMessage = ref('');
 
-		// Login method using dummy data
-		const loginUser = () => {
-			const user = dummyData.value.find(
-				(user) =>
-					user.email === emailValue.value &&
-					user.password === passwordValue.value
-			);
+    // Login user function
+    const loginUser = () => {
+      errorMessage.value = ''; // Clear previous error messages
 
-			if (user) {
-				console.log('Login successful');
-				errorMessage.value = '';
-				// Add logic for successful login (e.g., redirect, set auth token)
-			} else {
-				console.log('Incorrect Email or Password');
-				errorMessage.value = 'Incorrect Email or Password';
-			}
-		};
+      // Check if emailValue is not empty
+      if (!emailValue.value) {
+        errorMessage.value = 'Email is required.';
+        return;
+      }
 
-		return {
-			header,
-			emailValue,
-			passwordValue,
-			loginUser,
-			rememberMe,
-			errorMessage,
-		};
-	},
+      // Check if passwordValue is not empty
+      if (!passwordValue.value) {
+        errorMessage.value = 'Password is required.';
+        return;
+      }
+
+      // Check in userStore
+      const userFromStore = userStore.getUserByEmail(emailValue.value);
+
+      // Validate user
+      if (userFromStore && userFromStore.password === passwordValue.value) {
+        console.log('Login successful');
+        errorMessage.value = '';
+
+        // Call the login action to set userRole and token
+        const token = 'dummyToken'; // Replace with actual token if available
+        authStore.login(userFromStore.role, token);
+
+        // Optionally handle rememberMe logic here (e.g., store token in local storage)
+
+        // Redirect to feed page after login
+        router.push('/feed');
+      } else {
+        console.log('Incorrect Email or Password');
+        errorMessage.value = 'Incorrect Email or Password';
+      }
+    };
+
+    return {
+      emailValue,
+      passwordValue,
+      rememberMe,
+      errorMessage,
+      loginUser,
+    };
+  },
 };
 </script>
 
 <style scoped>
 form {
-	max-width: 420px;
-	margin: 30px auto;
-	background: white;
-	text-align: left;
-	padding: 40px;
-	border-radius: 10px;
+  max-width: 420px;
+  margin: 30px auto;
+  background: white;
+  text-align: left;
+  padding: 40px;
+  border-radius: 10px;
 }
 </style>
