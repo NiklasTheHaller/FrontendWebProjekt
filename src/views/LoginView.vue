@@ -5,28 +5,28 @@
     <form id="loginForm" @submit.prevent="loginUser">
       <!-- Using FormInput for Email -->
       <FormInput
-          id="email"
-          labelText="Email"
-          v-model="emailValue"
-          type="email"
-          placeholder="Enter your email"
+        id="email"
+        labelText="Email"
+        v-model="emailValue"
+        type="email"
+        placeholder="Enter your email"
       />
 
       <!-- Using FormInput for Password -->
       <FormInput
-          id="password"
-          labelText="Password"
-          v-model="passwordValue"
-          type="password"
-          placeholder="Enter your password"
+        id="password"
+        labelText="Password"
+        v-model="passwordValue"
+        type="password"
+        placeholder="Enter your password"
       />
 
       <div class="form-check">
         <input
-            type="checkbox"
-            class="form-check-input"
-            id="rememberme"
-            v-model="rememberMe"
+          type="checkbox"
+          class="form-check-input"
+          id="rememberme"
+          v-model="rememberMe"
         />
 
         <BaseLabel :htmlFor="'rememberme'" text="Remember me" />
@@ -40,66 +40,46 @@
 </template>
 
 <script>
-import FormInput from '@/components/molecules/FormInput.vue';
-import BaseButton from '@/components/atoms/BaseButton.vue';
-import { ref } from 'vue';
-import { useAuthStore } from '@/store/authStore'; // Import auth store
-import { useUserStore } from '@/store/userStore'; // Import user store
-import { useRouter } from 'vue-router';
+import FormInput from "@/components/molecules/FormInput.vue";
+import BaseButton from "@/components/atoms/BaseButton.vue";
+import { ref } from "vue";
+import { useAuthStore } from "@/store/authStore"; // Import auth store
+// import { useUserStore } from '@/store/userStore'; // Import user store
+import { useRouter } from "vue-router";
 import BaseLabel from "@/components/atoms/BaseLabel.vue";
 
 export default {
-  name: 'LoginView',
+  name: "LoginView",
   components: {
     BaseLabel,
     FormInput,
     BaseButton,
   },
   setup() {
-    const authStore = useAuthStore(); // Access the auth store
-    const userStore = useUserStore(); // Access the user store
-    const router = useRouter(); // Access the router
+    const authStore = useAuthStore();
+    const router = useRouter();
 
-    const emailValue = ref('');
-    const passwordValue = ref('');
-    const rememberMe = ref(false); // Track the 'Remember me' checkbox state
-    const errorMessage = ref('');
+    const emailValue = ref("");
+    const passwordValue = ref("");
+    const rememberMe = ref(false);
+    const errorMessage = ref("");
 
-    // Login user function
-    const loginUser = () => {
-      errorMessage.value = ''; // Clear previous error messages
+    const loginUser = async () => {
+      errorMessage.value = "";
 
-      // Check if emailValue is not empty
-      if (!emailValue.value) {
-        errorMessage.value = 'Email is required.';
+      if (!emailValue.value || !passwordValue.value) {
+        errorMessage.value = "Email and password are required.";
         return;
       }
 
-      // Check if passwordValue is not empty
-      if (!passwordValue.value) {
-        errorMessage.value = 'Password is required.';
-        return;
-      }
-
-      // Check in userStore
-      const userFromStore = userStore.getUserByEmail(emailValue.value);
-
-      // Validate user
-      if (userFromStore && userFromStore.password === passwordValue.value) {
-        console.log('Login successful');
-        errorMessage.value = '';
-
-        // Call the login action to set userRole and token
-        const token = 'dummyToken'; // Replace with actual token if available
-        authStore.login(userFromStore.role, token);
-
-        // Optionally handle rememberMe logic here (e.g., store token in local storage)
-
-        // Redirect to feed page after login
-        router.push('/feed');
+      const success = await authStore.login(
+        emailValue.value,
+        passwordValue.value
+      );
+      if (success) {
+        router.push("/feed");
       } else {
-        console.log('Incorrect Email or Password');
-        errorMessage.value = 'Incorrect Email or Password';
+        errorMessage.value = "Invalid email or password";
       }
     };
 

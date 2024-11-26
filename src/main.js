@@ -1,9 +1,9 @@
-import {createApp} from 'vue';
-import {createPinia} from 'pinia';
-import App from './App.vue';
-import router from './router';
-import {useAuthStore} from './store/authStore'; // Import the auth store
-import './assets/css/global.css'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import App from "./App.vue";
+import router from "./router";
+import { useAuthStore } from "./store/authStore"; // Import the auth store
+import "./assets/css/global.css";
 
 const app = createApp(App);
 
@@ -16,4 +16,4 @@ const authStore = useAuthStore();
 authStore.checkAuth();
 
 // Mount the app
-app.mount('#app');
+app.mount("#app");
