@@ -71,7 +71,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  await authStore.checkAuth(); // Validate session on every navigation
+  await authStore.checkAuth(); // Attempt to validate token or refresh
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: "login" });

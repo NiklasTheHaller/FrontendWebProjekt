@@ -1,15 +1,17 @@
+<!-- src/views/LoginView.vue -->
 <template>
   <div class="login-view">
     <h1>{{ header }}</h1>
+    <!-- Now 'header' is defined -->
 
     <form id="loginForm" @submit.prevent="loginUser">
-      <!-- Using FormInput for Email -->
+      <!-- Using FormInput for Username -->
       <FormInput
-        id="email"
-        labelText="Email"
-        v-model="emailValue"
-        type="email"
-        placeholder="Enter your email"
+        id="username"
+        labelText="Username"
+        v-model="usernameValue"
+        type="text"
+        placeholder="Enter your username"
       />
 
       <!-- Using FormInput for Password -->
@@ -43,8 +45,7 @@
 import FormInput from "@/components/molecules/FormInput.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import { ref } from "vue";
-import { useAuthStore } from "@/store/authStore"; // Import auth store
-// import { useUserStore } from '@/store/userStore'; // Import user store
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "vue-router";
 import BaseLabel from "@/components/atoms/BaseLabel.vue";
 
@@ -59,7 +60,8 @@ export default {
     const authStore = useAuthStore();
     const router = useRouter();
 
-    const emailValue = ref("");
+    const header = ref("Login"); // Define 'header'
+    const usernameValue = ref(""); // Changed from 'usernameOrEmailValue'
     const passwordValue = ref("");
     const rememberMe = ref(false);
     const errorMessage = ref("");
@@ -67,24 +69,25 @@ export default {
     const loginUser = async () => {
       errorMessage.value = "";
 
-      if (!emailValue.value || !passwordValue.value) {
-        errorMessage.value = "Email and password are required.";
+      if (!usernameValue.value || !passwordValue.value) {
+        errorMessage.value = "Username and password are required.";
         return;
       }
 
       const success = await authStore.login(
-        emailValue.value,
+        usernameValue.value, // Pass 'username'
         passwordValue.value
       );
       if (success) {
         router.push("/feed");
       } else {
-        errorMessage.value = "Invalid email or password";
+        errorMessage.value = "Invalid username or password";
       }
     };
 
     return {
-      emailValue,
+      header, // Return 'header'
+      usernameValue,
       passwordValue,
       rememberMe,
       errorMessage,

@@ -1,119 +1,83 @@
+// src/store/authStore.js
 import { defineStore } from "pinia";
-import axios from "axios";
+import apiClient from "@/services/axios";
 
-let mockMode = true; // Enable mock mode for testing
+const API_BASE_URL = "/api/auth";
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
     isAuthenticated: false,
     userRole: null,
-    mockMode: false, // Remove mock mode when in production
+    accessToken: null, // Store the access token
   }),
   actions: {
-    async login(email, password) {
-      if (mockMode) {
-        return this.mockLogin(email, password);
-      }
+    async login(identifier, password) {
       try {
-        const response = await axios.post(
-          "/api/login",
-          { email, password },
-          { withCredentials: true }
-        );
+        const response = await apiClient.post(`${API_BASE_URL}`, {
+          identifier,
+          password,
+        });
+
+        this.accessToken = response.data.accessToken;
         this.isAuthenticated = true;
         this.userRole = response.data.role;
+
+        localStorage.setItem("accessToken", this.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken); // Store refresh token
         return true;
       } catch (error) {
         console.error("Login failed:", error);
         return false;
       }
     },
-
     async logout() {
-      if (mockMode) {
-        return this.mockLogout();
-      }
       try {
-        await axios.post("/api/logout", {}, { withCredentials: true });
-        this.isAuthenticated = false;
-        this.userRole = null;
+        await apiClient.post(`${API_BASE_URL}/logout`, {
+          token: localStorage.getItem("refreshToken"),
+        });
+        this.clearAuthState();
       } catch (error) {
         console.error("Logout failed:", error);
       }
     },
+    clearAuthState() {
+      this.isAuthenticated = false;
+      this.userRole = null;
+      this.accessToken = null;
+      localStorage.removeItem("accessToken");
+    },
 
     async checkAuth() {
-      if (mockMode) {
-        return this.mockCheckAuth();
+      const token = this.accessToken || localStorage.getItem("accessToken");
+      if (!token) {
+        this.clearAuthState();
+        return;
       }
+
       try {
-        const response = await axios.get("/api/check-auth", {
-          withCredentials: true,
+        const response = await apiClient.get(`${API_BASE_URL}/check`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         this.isAuthenticated = true;
         this.userRole = response.data.role;
       } catch (error) {
-        this.isAuthenticated = false;
-        this.userRole = null;
+        console.error("Auth check failed:", error);
+        await this.refreshToken(); // Try refreshing if the token is expired
       }
     },
 
-    async switchRole(newRole) {
-      if (mockMode) {
-        return this.mockSwitchRole(newRole);
-      }
+    async refreshToken() {
       try {
-        const response = await axios.post(
-          "/api/switch-role",
-          { role: newRole },
-          { withCredentials: true }
-        );
-        this.userRole = response.data.role;
-        this.isAuthenticated = true;
+        const response = await apiClient.post(`${API_BASE_URL}/refresh`, {
+          token: localStorage.getItem("refreshToken"), // Send the refresh token
+        });
+        this.accessToken = response.data.token; // Use 'token' instead of 'accessToken'
+        localStorage.setItem("accessToken", this.accessToken);
       } catch (error) {
-        console.error("Role switch failed:", error);
-        this.isAuthenticated = false;
-      }
-    },
-
-    // Mock implementations
-    mockLogin(email, password) {
-      if (email === "admin@test.com" && password === "admin") {
-        this.isAuthenticated = true;
-        this.userRole = "admin";
-        return true;
-      } else if (email === "user@test.com" && password === "user") {
-        this.isAuthenticated = true;
-        this.userRole = "user";
-        return true;
-      } else {
-        this.isAuthenticated = false;
-        return false;
-      }
-    },
-
-    mockLogout() {
-      this.isAuthenticated = false;
-      this.userRole = null;
-    },
-
-    mockCheckAuth() {
-      // Simulate a logged-in user and preserve the current role
-      if (this.userRole) {
-        this.isAuthenticated = true;
-      } else {
-        this.isAuthenticated = false;
-        this.userRole = null;
-      }
-    },
-
-    mockSwitchRole(newRole) {
-      if (newRole) {
-        this.userRole = newRole;
-        this.isAuthenticated = true; // Simulate an authenticated session
-      } else {
-        this.isAuthenticated = false;
-        this.userRole = null;
+        console.error("Token refresh failed:", error);
+        this.clearAuthState();
       }
     },
   },
