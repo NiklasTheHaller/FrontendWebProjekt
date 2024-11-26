@@ -3,7 +3,7 @@ import {useAuthStore} from '@/store/authStore';
 
 const AboutView = () => import('../views/AboutView.vue');
 const LoginView = () => import('../views/LoginView.vue');
-const RegistrationView = () => import('../views/RegistrationView.vue');
+const RegistrationView = () => import('../views/RegistrationViewTest.vue');
 const ProfileView = () => import('../views/ProfileView.vue');
 const FeedView = () => import('../views/FeedView.vue');
 const AdminDashboardView = () => import('../views/AdminDashboardView.vue');
