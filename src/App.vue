@@ -27,10 +27,10 @@
     </template>
   </nav>
 
-  <div>
-    <p>Authenticated: {{ authState.isAuthenticated }}</p>
-    <p>Role: {{ authState.userRole }}</p>
-  </div>
+<!--  <div>-->
+<!--    <p>Authenticated: {{ authState.isAuthenticated }}</p>-->
+<!--    <p>Role: {{ authState.userRole }}</p>-->
+<!--  </div>-->
 
   <router-view />
 </template>
