@@ -30,6 +30,9 @@ export const useAuthStore = defineStore("authStore", {
         return false;
       }
     },
+    async setUserProfile(profileData) {
+      this.userProfile = profileData;
+    },
     async logout() {
       try {
         await apiClient.post(`${API_BASE_URL}/logout`, {

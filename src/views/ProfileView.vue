@@ -30,14 +30,8 @@
         placeholder="Enter your password"
       />
 
-      <!-- Role Input -->
-      <FormInput
-        id="role"
-        labelText="Role"
-        v-model="role"
-        type="text"
-        placeholder="Enter your role"
-      />
+      
+     
 
       <!-- Submit and Cancel Buttons -->
       <div class="button-group">
@@ -53,7 +47,7 @@
 
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/store/authStore";
 import { updateUserProfile } from "@/services/userService"; // Backend API call
 import FormInput from "@/components/molecules/FormInput.vue";
@@ -67,26 +61,43 @@ export default {
   },
   setup() {
     const authStore = useAuthStore(); // Access authenticated user data
-    const user = ref({ ...authStore.user }); // Populate with current user data
+    const user = ref({
+      username: authStore.user?.username || "",
+      email: authStore.user?.email || "",
+      password: "",
+    }); // Populate with current user data, add fallback values
     const errorMessage = ref("");
+
+    // Ensure user data is populated correctly when the component is mounted
+    onMounted(() => {
+      console.log("Loaded user data:", user.value); // Log user data for debugging
+    });
 
     // Update Profile API Call
     const updateProfile = async () => {
       try {
-        // Call the backend API
-        const updatedUser = await updateUserProfile(user.value);
-        // Update the auth store with the new data
-        authStore.setUser(updatedUser);
+        console.log("Updating user profile with data:", user.value); // Log the data being sent
+        const updatedUser = await updateUserProfile(user.value.id, {
+          username: user.value.username.trim(),
+          email: user.value.email.trim(),
+          password: user.value.password,
+          role: "USER", // Hardcoded role
+        });
+        authStore.setUser(updatedUser); // Update the auth store with the new data
         alert("Profile updated successfully!");
       } catch (error) {
         console.error("Profile update failed:", error);
-        errorMessage.value = error.message || "Failed to update profile.";
+        errorMessage.value = error.response?.data?.message || "Failed to update profile.";
       }
     };
 
     // Reset form to original state
     const resetForm = () => {
-      user.value = { ...authStore.user };
+      user.value = {
+        username: authStore.user?.username || "",
+        email: authStore.user?.email || "",
+        password: "",
+      };
       errorMessage.value = "";
     };
 
@@ -99,6 +110,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 form {
   max-width: 420px;
@@ -107,9 +119,10 @@ form {
   text-align: left;
   padding: 40px;
   border-radius: 10px;
-  }
+}
 
-  
-
+button {
+  margin-top: 20px;
+}
 </style>
 
