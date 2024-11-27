@@ -27,17 +27,6 @@
     </template>
   </nav>
 
-  <!-- Role switcher buttons for testing -->
-  <div class="role-switcher">
-    <label for="role-select">Switch Role:</label>
-    <select id="role-select" v-model="selectedRole" @change="changeRole">
-      <option value="" disabled>Select a role</option>
-      <option value="user">User</option>
-      <option value="admin">Admin</option>
-      <option value="none">None</option>
-    </select>
-  </div>
-
   <div>
     <p>Authenticated: {{ authState.isAuthenticated }}</p>
     <p>Role: {{ authState.userRole }}</p>
@@ -58,11 +47,11 @@ export default {
     const selectedRole = ref("");
 
     const isLoggedIn = computed(() => authStore.isAuthenticated);
-    const isAdmin = computed(() => authStore.userRole === "admin");
+    const isAdmin = computed(() => authStore.userRole || localStorage.getItem("userRole") === "ADMIN");
 
     const authState = computed(() => ({
       isAuthenticated: authStore.isAuthenticated,
-      userRole: authStore.userRole,
+      userRole: authStore.userRole ||localStorage.getItem("userRole"),
     }));
 
     async function changeRole() {

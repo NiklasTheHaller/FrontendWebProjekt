@@ -1,10 +1,11 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import App from "./App.vue";
-import router from "./router";
-import { useAuthStore } from "./store/authStore"; // Import the auth store
-import "./assets/css/global.css";
-import "@/services/axios"; // Import the Axios instance
+
+import {createApp} from 'vue';
+import {createPinia} from 'pinia';
+import App from './App.vue';
+import router from './router';
+import {useAuthStore} from './store/authStore'; // Import the auth store
+import './assets/css/global.css'
+import "@/services/axios";
 
 const app = createApp(App);
 

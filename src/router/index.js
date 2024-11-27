@@ -71,15 +71,27 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  await authStore.checkAuth(); // Attempt to validate token or refresh
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  // Attempt to validate token or refresh if necessary
+  await authStore.checkAuth();
+
+  const isAuthenticated = authStore.isAuthenticated;
+  const userRole = authStore.userRole || localStorage.getItem("userRole"); // Use localStorage as fallback
+
+  // Check authentication requirements
+  if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: "login" });
-  } else if (to.meta.requiresAdmin && authStore.userRole !== "admin") {
-    next({ name: "home" });
-  } else {
-    next();
+    return;
   }
+
+  // Check admin requirements
+  if (to.meta.requiresAdmin && userRole !== "ADMIN") {
+    next({ name: "home" });
+    return;
+  }
+
+  next(); // Allow navigation
 });
+
 
 export default router;
