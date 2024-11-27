@@ -105,7 +105,8 @@ import FormInput from "@/components/molecules/FormInput.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import axios from "axios";
 import * as Yup from "yup";
-import { getNames } from 'country-list'; // Import country-list package
+import { getNames } from 'country-list';
+import router from "@/router"; // Import country-list package
 
 export default {
   name: "RegistrationView",
@@ -248,6 +249,7 @@ export default {
       try {
         const response = await axios.post("/api/users", data);
         console.log("Registration successful:", response);
+        await router.push('/login'); // Redirect to login page after successful registration
       } catch (error) {
         console.error("Registration failed:", error);
 
