@@ -31,6 +31,9 @@ export async function updateUserProfile(payload) {
         // Fetch the user profile to get the ID
         const userProfile = await fetchUserProfile();
 
+        console.log(userProfile)
+        console.log(payload)
+
         // Ensure the profile contains an ID
         if (!userProfile.id) {
             throw new Error("User ID is missing in the fetched profile. Cannot update user.");
@@ -40,6 +43,8 @@ export async function updateUserProfile(payload) {
             email: payload.email.trim(),       // Ensure email is properly formatted
             password: payload.password,        // Password validation should already be done
             role: "USER",                      // Hardcoded role
+            salutation: payload.salutation,
+            country: payload.country,
         };
 
         console.log("Final Payload:", finalPayload); 
