@@ -241,9 +241,8 @@ export default {
         email: this.emailValue,
         password: this.passwordValue,
         role: "USER",
-        salutation: this.salutation,
-        otherSalutation: this.salutation === 'other' ? this.otherSalutation : null,
-        country: this.country,
+        salutation: this.salutation === 'other' ? this.otherSalutation : this.salutation,
+        country: this.country || "",
       };
 
       try {
