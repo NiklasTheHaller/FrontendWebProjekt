@@ -1,109 +1,112 @@
 <!-- src/views/LoginView.vue -->
 <template>
-  <div class="login-view">
-    <h1>{{ header }}</h1>
-    <!-- Now 'header' is defined -->
-
-    <form id="loginForm" @submit.prevent="loginUser">
-      <!-- Using FormInput for Username -->
-      <FormInput
-        id="username"
-        labelText="Username"
-        v-model="usernameValue"
-        type="text"
-        placeholder="Enter your username"
-      />
-
-      <!-- Using FormInput for Password -->
-      <FormInput
-        id="password"
-        labelText="Password"
-        v-model="passwordValue"
-        type="password"
-        placeholder="Enter your password"
-      />
-
-      <div class="form-check">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          id="rememberme"
-          v-model="rememberMe"
-        />
-
-        <BaseLabel :htmlFor="'rememberme'" text="Remember me" />
+  <div
+    class="min-h-screen flex items-center justify-center bg-neutral-200 py-12 px-4 sm:px-6 lg:px-8"
+  >
+    <div
+      class="max-w-md w-full space-y-8 bg-neutral-100 p-8 rounded-lg shadow-lg"
+    >
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-neutral-700">{{ header }}</h2>
       </div>
-
-      <!-- Using the BaseButton -->
-      <BaseButton class="base-button" type="submit">Sign in</BaseButton>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-    </form>
+      <form
+        @submit.prevent="handleLogin"
+        class="mt-8 space-y-6"
+      >
+        <div class="space-y-4">
+          <FormInput
+            id="username"
+            v-model="usernameValue"
+            type="text"
+            labelText="Username"
+            placeholder="Enter your username"
+          />
+          <FormInput
+            id="password"
+            v-model="passwordValue"
+            type="password"
+            labelText="Password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <BaseButton
+          type="primary"
+          @click="loginUser"
+        >
+          Sign in
+        </BaseButton>
+        <p
+          v-if="errorMessage"
+          class="mt-2 text-sm text-error text-center bg-error/10 p-2 rounded"
+        >
+          {{ errorMessage }}
+        </p>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-import FormInput from "@/components/molecules/FormInput.vue";
-import BaseButton from "@/components/atoms/BaseButton.vue";
-import { ref } from "vue";
-import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "vue-router";
-import BaseLabel from "@/components/atoms/BaseLabel.vue";
+  import FormInput from "@/components/molecules/FormInput.vue";
+  import BaseButton from "@/components/atoms/BaseButton.vue";
+  import { ref } from "vue";
+  import { useAuthStore } from "@/store/authStore";
+  import { useRouter } from "vue-router";
 
-export default {
-  name: "LoginView",
-  components: {
-    BaseLabel,
-    FormInput,
-    BaseButton,
-  },
-  setup() {
-    const authStore = useAuthStore();
-    const router = useRouter();
+  export default {
+    name: "LoginView",
+    components: {
+      FormInput,
+      BaseButton,
+    },
+    setup() {
+      const authStore = useAuthStore();
+      const router = useRouter();
 
-    const header = ref("Login"); // Define 'header'
-    const usernameValue = ref(""); // Changed from 'usernameOrEmailValue'
-    const passwordValue = ref("");
-    const rememberMe = ref(false);
-    const errorMessage = ref("");
+      const header = ref("Login"); // Define 'header'
+      const usernameValue = ref(""); // Changed from 'usernameOrEmailValue'
+      const passwordValue = ref("");
+      const rememberMe = ref(false);
+      const errorMessage = ref("");
 
-    const loginUser = async () => {
-      errorMessage.value = "";
+      const loginUser = async () => {
+        errorMessage.value = "";
 
-      if (!usernameValue.value || !passwordValue.value) {
-        errorMessage.value = "Username and password are required.";
-        return;
-      }
+        if (!usernameValue.value || !passwordValue.value) {
+          errorMessage.value = "Username and password are required.";
+          return;
+        }
 
-      const success = await authStore.login(
-        usernameValue.value, // Pass 'username'
-        passwordValue.value
-      );
-      if (success) {
-        router.push("/feed");
-      } else {
-        errorMessage.value = "Invalid username or password";
-      }
-    };
+        const success = await authStore.login(
+          usernameValue.value, // Pass 'username'
+          passwordValue.value
+        );
+        if (success) {
+          router.push("/feed");
+        } else {
+          errorMessage.value = "Invalid username or password";
+        }
+      };
 
-    return {
-      header, // Return 'header'
-      usernameValue,
-      passwordValue,
-      rememberMe,
-      errorMessage,
-      loginUser,
-    };
-  },
-};
+      return {
+        header, // Return 'header'
+        usernameValue,
+        passwordValue,
+        rememberMe,
+        errorMessage,
+        loginUser,
+      };
+    },
+  };
 </script>
 
 <style scoped>
-form {
-  max-width: 420px;
-  margin: 30px auto;
-  background: white;
-  text-align: left;
-  padding: 40px;
-  border-radius: 10px;
-}
+  form {
+    max-width: 420px;
+    margin: 30px auto;
+    background: white;
+    text-align: left;
+    padding: 40px;
+    border-radius: 10px;
+  }
 </style>
