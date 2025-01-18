@@ -1,38 +1,92 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/feed">Feed</router-link> |
-    <router-link to="/profile">Profile</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/help">Help</router-link> |
-    <router-link to="/imprint">Imprint</router-link>
-
-    <!-- Show AdminDashboard only if the user is an admin -->
-    <template v-if="isAdmin">
+  <div class="bg-light min-h-screen">
+    <nav class="p-8">
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/"
+        >Home</router-link
+      >
       |
-      <router-link to="/admin">AdminDashboard</router-link>
-    </template>
-
-    <!-- Show Login and Registration only if the user is not logged in -->
-    <template v-if="!isLoggedIn">
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/feed"
+        >Feed</router-link
+      >
       |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/registration">Registration</router-link>
-    </template>
-
-    <!-- Show Logout if the user is logged in -->
-    <template v-else>
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/profile"
+        >Profile</router-link
+      >
       |
-      <a href="#" @click.prevent="logout">Logout</a>
-    </template>
-  </nav>
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/about"
+        >About</router-link
+      >
+      |
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/help"
+        >Help</router-link
+      >
+      |
+      <router-link
+        class="font-bold text-secondary"
+        active-class="text-primary"
+        to="/imprint"
+        >Imprint</router-link
+      >
 
-<!--  <div>-->
-<!--    <p>Authenticated: {{ authState.isAuthenticated }}</p>-->
-<!--    <p>Role: {{ authState.userRole }}</p>-->
-<!--  </div>-->
+      <!-- Show AdminDashboard only if the user is an admin -->
+      <template v-if="isAdmin">
+        |
+        <router-link
+          class="font-bold text-secondary"
+          active-class="text-primary"
+          to="/admin"
+          >AdminDashboard</router-link
+        >
+      </template>
 
-  <router-view />
+      <!-- Show Login and Registration only if the user is not logged in -->
+      <template v-if="!isLoggedIn">
+        |
+        <router-link
+          class="font-bold text-secondary"
+          active-class="text-primary"
+          to="/login"
+          >Login</router-link
+        >
+        |
+        <router-link
+          class="font-bold text-secondary"
+          active-class="text-primary"
+          to="/registration"
+          >Registration</router-link
+        >
+      </template>
+
+      <!-- Show Logout if the user is logged in -->
+      <template v-else>
+        |
+        <a
+          href="#"
+          @click.prevent="logout"
+          class="font-bold text-secondary"
+          :class="{ 'text-primary': isActive('/logout') }"
+          >Logout</a
+        >
+      </template>
+    </nav>
+
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -47,11 +101,13 @@ export default {
     const selectedRole = ref("");
 
     const isLoggedIn = computed(() => authStore.isAuthenticated);
-    const isAdmin = computed(() => authStore.userRole || localStorage.getItem("userRole") === "ADMIN");
+    const isAdmin = computed(
+      () => authStore.userRole || localStorage.getItem("userRole") === "ADMIN"
+    );
 
     const authState = computed(() => ({
       isAuthenticated: authStore.isAuthenticated,
-      userRole: authStore.userRole ||localStorage.getItem("userRole"),
+      userRole: authStore.userRole || localStorage.getItem("userRole"),
     }));
 
     async function changeRole() {
@@ -69,6 +125,10 @@ export default {
       router.push("/login");
     }
 
+    function isActive(path) {
+      return router.currentRoute.value.path === path;
+    }
+
     return {
       changeRole,
       logout,
@@ -76,37 +136,12 @@ export default {
       isAdmin,
       selectedRole,
       authState,
+      isActive,
     };
   },
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-.role-switcher {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-}
+<style scoped>
+/* Remove the existing styles */
 </style>
