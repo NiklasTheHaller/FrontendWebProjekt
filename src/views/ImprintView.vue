@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold mb-2">Address</h2>
-        <p>SocialHub GmbH</p>
+        <p>LitterBox GmbH</p>
         <p>Innovation Street 123/4</p>
         <p>1010 Vienna, AUT</p>
       </div>
@@ -22,11 +22,17 @@
       </div>
       <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold mb-2">Authority under ECG</h2>
-        <p>Magistrate District Office of the 9th District, WKO Vienna, IT Services</p>
+        <p>
+          Magistrate District Office of the 9th District, WKO Vienna, IT
+          Services
+        </p>
       </div>
       <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold mb-2">Business Activity</h2>
-        <p>Development, production, and distribution of software as well as IT services for social media platforms.</p>
+        <p>
+          Development, production, and distribution of software as well as IT
+          services for social media platforms.
+        </p>
       </div>
       <div class="bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-semibold mb-2">VAT Number</h2>
@@ -41,11 +47,11 @@
 </template>
 
 <script>
-export default {
-  name: 'ImprintView'
-}
+  export default {
+    name: "ImprintView",
+  };
 </script>
 
 <style scoped>
-/* Optional: Add any custom styles here if necessary */
+  /* Optional: Add any custom styles here if necessary */
 </style>

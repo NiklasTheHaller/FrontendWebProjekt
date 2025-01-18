@@ -1,46 +1,37 @@
 <template>
-	<button
-		class="rounded-md py-2 px-4 text-center text-sm transition-all shadow-md hover:shadow-lg focus:shadow-none active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-		:class="buttonClass"
-		@click="onClick">
-		<slot />
-	</button>
+  <button
+    class="w-full rounded-md py-2.5 px-4 text-center font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    :class="buttonClass"
+    @click="onClick"
+  >
+    <slot />
+  </button>
 </template>
 
 <script>
-export default {
-	name: 'BaseButton',
-	props: {
-		type: {
-			type: String,
-			default: 'primary', // Available options: primary, secondary, danger, etc.
-		},
-		onClick: {
-			type: Function,
-			default: () => {},
-		},
-	},
-	computed: {
-		buttonClass() {
-			// Define different button styles based on the "type" prop
-			const baseClasses = 'border border-transparent text-white transition-all';
-
-			switch (this.type) {
-				case 'secondary':
-					return `${baseClasses} bg-gray-500 hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-600`;
-				case 'danger':
-					return `${baseClasses} bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-700`;
-				case 'warning':
-					return `${baseClasses} bg-yellow-500 hover:bg-yellow-600 focus:bg-yellow-600 active:bg-yellow-600 text-black`;
-				case 'success':
-					return `${baseClasses} bg-green-500 hover:bg-green-600 focus:bg-green-600 active:bg-green-600`;
-				default:
-					// Primary by default
-					return `${baseClasses} bg-slate-800 hover:bg-slate-700 focus:bg-slate-700 active:bg-slate-700`;
-			}
-		},
-	},
-};
+  export default {
+    name: "BaseButton",
+    props: {
+      type: {
+        type: String,
+        default: "primary",
+      },
+      onClick: {
+        type: Function,
+        default: () => {},
+      },
+    },
+    computed: {
+      buttonClass() {
+        switch (this.type) {
+          case "secondary":
+            return "bg-secondary-600 text-neutral-100 border border-secondary-700 hover:bg-secondary-700 shadow-sm hover:shadow-md";
+          default:
+            return "bg-primary-600 text-neutral-100 border border-primary-700 hover:bg-primary-700 shadow-sm hover:shadow-md";
+        }
+      },
+    },
+  };
 </script>
 
 <style scoped></style>
