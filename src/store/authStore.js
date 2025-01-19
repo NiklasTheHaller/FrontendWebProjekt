@@ -31,6 +31,8 @@ export const useAuthStore = defineStore("authStore", {
         localStorage.setItem("refreshToken", response.data.refreshToken); // Store refresh token
         localStorage.setItem("userRole", this.userRole);
 
+        console.log("Login successful:", response.data);
+
         return true;
       } catch (error) {
         console.error("Login failed:", error);

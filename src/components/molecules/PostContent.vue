@@ -1,25 +1,16 @@
 <template>
-	<div>
-		<BasePostTitle :title="title" />
-		<BasePostBody :body="body" />
-	</div>
+  <div class="my-4">
+    <p class="text-gray-800">{{ content }}</p>
+  </div>
 </template>
 
-<script>
-import BasePostTitle from '../atoms/BasePostTitle.vue';
-import BasePostBody from '../atoms/BasePostBody.vue';
+<script setup>
+  import { defineProps } from "vue";
 
-export default {
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		body: {
-			type: String,
-			required: true,
-		},
-	},
-	components: { BasePostTitle, BasePostBody },
-};
+  defineProps({
+    content: {
+      type: String,
+      required: true,
+    },
+  });
 </script>
