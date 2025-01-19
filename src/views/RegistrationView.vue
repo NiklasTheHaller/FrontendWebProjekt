@@ -390,8 +390,4 @@
   };
 </script>
 
-<style scoped>
-  .form-group {
-    @apply space-y-1;
-  }
-</style>
+<style scoped></style>

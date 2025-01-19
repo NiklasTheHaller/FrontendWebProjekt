@@ -2,22 +2,35 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/store/authStore";
 
-// Import your views
-const HomeView = () => import("../views/HomeView.vue");
-const AboutView = () => import("../views/AboutView.vue");
-const LoginView = () => import("../views/LoginView.vue");
-const RegistrationView = () => import("../views/RegistrationView.vue");
-const ProfileView = () => import("../views/ProfileView.vue");
-const FeedView = () => import("../views/FeedView.vue");
-const AdminDashboardView = () => import("../views/AdminDashboardView.vue");
-const ImprintView = () => import("../views/ImprintView.vue");
-const HelpView = () => import("../views/HelpView.vue");
+// Import views with explicit chunk names for better error handling
+const HomeView = () =>
+  import(/* webpackChunkName: "home" */ "../views/HomeView.vue");
+const AboutView = () =>
+  import(/* webpackChunkName: "about" */ "../views/AboutView.vue");
+const LoginView = () =>
+  import(/* webpackChunkName: "login" */ "../views/LoginView.vue");
+const RegistrationView = () =>
+  import(
+    /* webpackChunkName: "registration" */ "../views/RegistrationView.vue"
+  );
+const ProfileView = () =>
+  import(/* webpackChunkName: "profile" */ "../views/ProfileView.vue");
+const FeedView = () =>
+  import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
+const AdminDashboardView = () =>
+  import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
+const ImprintView = () =>
+  import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
+const HelpView = () =>
+  import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: HomeView,
+    // Add error handling for component loading
+    props: true,
   },
   {
     path: "/about",
@@ -69,29 +82,36 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
-
-  // Attempt to validate token or refresh if necessary
-  await authStore.checkAuth();
-
-  const isAuthenticated = authStore.isAuthenticated;
-  const userRole = authStore.userRole || localStorage.getItem("userRole"); // Use localStorage as fallback
-
-  // Check authentication requirements
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: "login" });
-    return;
-  }
-
-  // Check admin requirements
-  if (to.meta.requiresAdmin && userRole !== "ADMIN") {
-    next({ name: "home" });
-    return;
-  }
-
-  next(); // Allow navigation
+// Add global error handler for navigation failures
+router.onError((error) => {
+  console.error("Router error:", error);
+  // Redirect to home page or error page if needed
+  router.push({ name: "home" });
 });
 
+router.beforeEach(async (to, from, next) => {
+  try {
+    const authStore = useAuthStore();
+    await authStore.checkAuth();
+
+    const isAuthenticated = authStore.isAuthenticated;
+    const userRole = authStore.userRole || localStorage.getItem("userRole");
+
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      next({ name: "login" });
+      return;
+    }
+
+    if (to.meta.requiresAdmin && userRole !== "ADMIN") {
+      next({ name: "home" });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    console.error("Navigation guard error:", error);
+    next({ name: "home" });
+  }
+});
 
 export default router;

@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store/authStore";
 
 // Create an Axios instance
 const apiClient = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || "http://localhost:8080", // defined in .env file
+  baseURL: process.env.VITE_API_BASE_URL || "http://localhost:8080", // defined in .env file
   withCredentials: true, // To send cookies
 });
 
