@@ -89,29 +89,22 @@ router.onError((error) => {
   router.push({ name: "home" });
 });
 
-router.beforeEach(async (to, from, next) => {
-  try {
-    const authStore = useAuthStore();
-    await authStore.checkAuth();
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  const isAuthenticated = authStore.isAuthenticated;
+  const userRole = authStore.userRole;
 
-    const isAuthenticated = authStore.isAuthenticated;
-    const userRole = authStore.userRole || localStorage.getItem("userRole");
-
-    if (to.meta.requiresAuth && !isAuthenticated) {
-      next({ name: "login" });
-      return;
-    }
-
-    if (to.meta.requiresAdmin && userRole !== "ADMIN") {
-      next({ name: "home" });
-      return;
-    }
-
-    next();
-  } catch (error) {
-    console.error("Navigation guard error:", error);
-    next({ name: "home" });
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: "login" });
+    return;
   }
+
+  if (to.meta.requiresAdmin && userRole !== "ADMIN") {
+    next({ name: "home" });
+    return;
+  }
+
+  next();
 });
 
 export default router;
