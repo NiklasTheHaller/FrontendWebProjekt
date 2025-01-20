@@ -1,21 +1,22 @@
-
-import {createApp} from 'vue';
-import {createPinia} from 'pinia';
-import App from './App.vue';
-import router from './router';
-import {useAuthStore} from './store/authStore'; // Import the auth store
-import './assets/css/global.css'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import App from "./App.vue";
+import router from "./router";
+import { useAuthStore } from "./store/authStore";
+import "./assets/css/global.css";
 import "@/services/axios";
 
 const app = createApp(App);
+const pinia = createPinia();
 
-// Initialize Pinia and Router
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 
-// Call checkAuth to restore auth state on app load
+// Initialize auth check on app load
 const authStore = useAuthStore();
-authStore.checkAuth();
+authStore.checkAuth().catch((error) => {
+  console.error("Initial auth check failed:", error);
+  router.push("/");
+});
 
-// Mount the app
 app.mount("#app");

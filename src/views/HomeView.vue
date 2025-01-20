@@ -4,7 +4,7 @@
     <section class="bg-gradient-to-b from-primary-100 to-neutral-100 py-20">
       <div class="container mx-auto px-4 max-w-6xl">
         <div class="text-center">
-          <h1 class="text-6xl font-bold text-primary-900 mb-6">Litterbox</h1>
+          <h1 class="text-6xl font-bold text-primary-900 mb-6">LitterBox</h1>
           <p class="text-2xl text-neutral-500 mb-12">
             Share your thoughts, nine lives at a time
           </p>
