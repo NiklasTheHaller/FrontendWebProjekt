@@ -25,6 +25,10 @@ const ImprintView = () =>
   import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
 const HelpView = () =>
   import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
+const UserPostsView = () =>
+  import(/* webpackChunkName: "help" */ "../views/UserPostsView.vue");
+const PostView = () =>
+  import(/* webpackChunkName: "help" */ "../views/PostView.vue");
 
 const routes = [
   {
@@ -68,6 +72,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/users/:username/posts",
+    name: "UserPosts",
+    component: UserPostsView,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/admin",
     name: "admin",
     component: AdminDashboardView,
@@ -82,6 +92,12 @@ const routes = [
     path: "/help",
     name: "help",
     component: HelpView,
+  },
+  {
+    path: "/post/:id",
+    name: "post",
+    component: PostView,
+    meta: { requiresAuth: true },
   },
 ];
 
@@ -100,9 +116,7 @@ router.onError((error) => {
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
-  // Wait for auth check if route requires authentication
   if (to.meta.requiresAuth) {
-    // Only check auth if we're not already authenticated
     if (!authStore.isAuthenticated) {
       const isAuthenticated = await authStore.checkAuth();
       if (!isAuthenticated) {

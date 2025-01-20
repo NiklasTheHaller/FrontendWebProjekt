@@ -120,20 +120,28 @@
 <script>
   import { useAuthStore } from "./store/authStore";
   import { useRouter } from "vue-router";
-  import { computed, ref } from "vue";
+  import { computed, ref, watch } from "vue";
 
   export default {
     setup() {
       const authStore = useAuthStore();
       const router = useRouter();
       const selectedRole = ref("");
+      const navItems = ref([]);
 
-      const mainNavItems = [
-        { name: "Home", path: "/" },
-        { name: "Feed", path: "/feed" },
-        { name: "Create Post", path: "/create-post" },
-        { name: "Profile", path: "/profile" },
-      ];
+      const username = computed(() => authStore.identifier);
+
+      const mainNavItems = () => {
+        navItems.value = [
+          { name: "Home", path: "/" },
+          { name: "Feed", path: "/feed" },
+          { name: "Create Post", path: "/create-post" },
+          { name: "Profile", path: "/profile" },
+          { name: "My Posts", path: `/users/${username.value}/posts` },
+        ];
+      };
+
+      watch(() => authStore.identifier, mainNavItems, { immediate: true });
 
       const footerNavItems = [
         { name: "About", path: "/about" },
@@ -158,7 +166,7 @@
         logout,
         isLoggedIn,
         isAdmin,
-        mainNavItems,
+        mainNavItems: navItems,
         footerNavItems,
       };
     },

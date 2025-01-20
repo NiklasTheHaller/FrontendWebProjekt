@@ -34,7 +34,6 @@
   };
 
   const handleMediaLoad = () => {
-    console.log(`Media loaded successfully: ${props.fileType}`);
     loading.value = false;
   };
 
@@ -44,21 +43,12 @@
     try {
       isDownloading.value = true;
       loading.value = true;
-      console.log(
-        `Loading media type: ${props.fileType} for UUID: ${props.fileUuid}`
-      );
 
       const blob = await fileStore.downloadFile(props.fileUuid);
       if (!blob) throw new Error("No blob received");
 
-      // Log Blob details for debugging
-      console.log("Received Blob:", blob);
-      console.log("Blob Type:", blob.type);
-      console.log("Blob Size:", blob.size);
-
       // Correct Blob handling
       mediaUrl.value = URL.createObjectURL(blob);
-      console.log("Media URL created:", mediaUrl.value);
 
       // For non-media files, set loading to false immediately
       if (!isImage.value || !isVideo.value) {

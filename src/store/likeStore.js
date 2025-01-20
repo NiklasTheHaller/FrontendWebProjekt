@@ -30,8 +30,8 @@ export const useLikeStore = defineStore("like", {
       }
     },
 
-    async toggleLike(postId, userId) {
-      const userId = 1; // Get the actual user ID from the auth store
+    async toggleLike(postId) {
+      const userId = "currentUserId"; // Replace with actual user ID from auth
       const isLiked = this.isPostLikedByUser(postId, userId);
 
       try {
@@ -44,7 +44,7 @@ export const useLikeStore = defineStore("like", {
             (like) => like.userId !== userId
           );
         } else {
-          const newLike = await likeService.createLike(postId, userId);
+          const newLike = await likeService.createLike(postId);
           if (!this.likes[postId]) this.likes[postId] = [];
           this.likes[postId].push(newLike);
         }

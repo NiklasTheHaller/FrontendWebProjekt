@@ -47,8 +47,8 @@
 
   const postStore = usePostStore();
 
-  onMounted(() => {
-    postStore.fetchPosts();
+  onMounted(async () => {
+    await postStore.fetchPosts();
   });
 
   const { posts, loading, error } = storeToRefs(postStore);

@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("authStore", {
     userRole: null,
     accessToken: null,
     refreshTimer: null,
+    identifier: null,
   }),
   actions: {
     /**
@@ -48,10 +49,12 @@ export const useAuthStore = defineStore("authStore", {
 
       const decoded = jwtDecode(accessToken);
       this.userRole = decoded.role;
+      this.identifier = decoded.sub;
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userRole", this.userRole);
+      localStorage.setItem("identifier", this.identifier);
 
       // Start monitoring token expiration
       this.startRefreshTimer();
@@ -103,6 +106,8 @@ export const useAuthStore = defineStore("authStore", {
       this.isAuthenticated = false;
       this.userRole = null;
       this.accessToken = null;
+      this.identifier = null;
+
       if (this.refreshTimer) {
         clearTimeout(this.refreshTimer);
         this.refreshTimer = null;
@@ -110,6 +115,7 @@ export const useAuthStore = defineStore("authStore", {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userRole");
+      localStorage.removeItem("identifier");
     },
 
     /**
@@ -138,7 +144,7 @@ export const useAuthStore = defineStore("authStore", {
         } catch (refreshError) {
           console.error("Token refresh failed:", refreshError);
           this.clearAuthState();
-          router.push("/login"); // test
+          router.push("/login");
           return false; // Return false if both checks fail
         }
       }
