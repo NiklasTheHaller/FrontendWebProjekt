@@ -17,6 +17,8 @@ const ProfileView = () =>
   import(/* webpackChunkName: "profile" */ "../views/ProfileView.vue");
 const FeedView = () =>
   import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
+const CreatePostView = () =>
+  import(/* webpackChunkName: "login" */ "../views/CreatePostView.vue");
 const AdminDashboardView = () =>
   import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
 const ImprintView = () =>
@@ -60,6 +62,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/create-post",
+    name: "CreatePost",
+    component: CreatePostView,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/admin",
     name: "admin",
     component: AdminDashboardView,
@@ -89,15 +97,22 @@ router.onError((error) => {
   router.push({ name: "home" });
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  const isAuthenticated = authStore.isAuthenticated;
-  const userRole = authStore.userRole;
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: "login" });
-    return;
+  // Wait for auth check if route requires authentication
+  if (to.meta.requiresAuth) {
+    // Only check auth if we're not already authenticated
+    if (!authStore.isAuthenticated) {
+      const isAuthenticated = await authStore.checkAuth();
+      if (!isAuthenticated) {
+        next({ name: "login" });
+        return;
+      }
+    }
   }
+
+  const userRole = authStore.userRole;
 
   if (to.meta.requiresAdmin && userRole !== "ADMIN") {
     next({ name: "home" });

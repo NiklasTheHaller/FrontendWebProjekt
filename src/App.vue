@@ -131,6 +131,7 @@
       const mainNavItems = [
         { name: "Home", path: "/" },
         { name: "Feed", path: "/feed" },
+        { name: "Create Post", path: "/create-post" },
         { name: "Profile", path: "/profile" },
       ];
 

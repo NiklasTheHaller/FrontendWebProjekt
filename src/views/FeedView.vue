@@ -16,26 +16,31 @@
       {{ error }}
     </div>
 
-    <div v-else>
-      <div v-if="posts.length">
-        <ul class="space-y-4">
-          <li
-            v-for="post in posts"
-            :key="post.id"
-          >
-            <UserPost :post="post" />
-          </li>
-        </ul>
-      </div>
-      <div v-else>
-        <p class="text-center text-gray-500">No posts available.</p>
+    <div
+      v-else
+      class="flex justify-center"
+    >
+      <div class="w-full max-w-2xl">
+        <div v-if="sortedPosts.length">
+          <ul class="space-y-4">
+            <li
+              v-for="post in sortedPosts"
+              :key="post.id"
+            >
+              <UserPost :post="post" />
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <p class="text-center text-gray-500">No posts available.</p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { onMounted } from "vue";
+  import { onMounted, computed } from "vue";
   import { storeToRefs } from "pinia";
   import { usePostStore } from "../store/postStore";
   import UserPost from "../components/organisms/UserPost.vue";
@@ -47,4 +52,10 @@
   });
 
   const { posts, loading, error } = storeToRefs(postStore);
+
+  const sortedPosts = computed(() => {
+    return [...posts.value].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+  });
 </script>
