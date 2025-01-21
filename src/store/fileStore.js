@@ -6,6 +6,7 @@ export const useFileStore = defineStore("file", {
     currentFile: null,
     loading: false,
     error: null,
+    files: [],
   }),
 
   actions: {
