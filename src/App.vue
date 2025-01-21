@@ -108,7 +108,6 @@
             </div>
           </nav>
 
-
           <!-- Auth Navigation -->
           <div class="hidden md:flex items-center space-x-4">
             <template v-if="!isLoggedIn">
@@ -262,7 +261,7 @@ export default {
       ];
     };
 
-      const isMobileMenuOpen = ref(false);
+    const isMobileMenuOpen = ref(false);
 
       const handleMobileLogout = () => {
         logout();
@@ -302,5 +301,3 @@ export default {
   },
 };
 </script>
-
-

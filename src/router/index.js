@@ -1,4 +1,3 @@
-// router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/store/authStore";
 
@@ -37,7 +36,6 @@ const routes = [
     path: "/",
     name: "home",
     component: HomeView,
-    // Add error handling for component loading
     props: true,
   },
   {
@@ -123,7 +121,6 @@ const router = createRouter({
 // Add global error handler for navigation failures
 router.onError((error) => {
   console.error("Router error:", error);
-  // Redirect to home page or error page if needed
   router.push({ name: "home" });
 });
 
