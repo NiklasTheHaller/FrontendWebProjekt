@@ -17,12 +17,16 @@ const ProfileView = () =>
   import(/* webpackChunkName: "profile" */ "../views/ProfileView.vue");
 const FeedView = () =>
   import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
+const CreatePostView = () =>
+  import(/* webpackChunkName: "login" */ "../views/CreatePostView.vue");
 const AdminDashboardView = () =>
   import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
 const ImprintView = () =>
   import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
 const HelpView = () =>
   import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
+const UserPostsView = () =>
+  import(/* webpackChunkName: "help" */ "../views/UserPostsView.vue");
 
 const routes = [
   {
@@ -60,6 +64,18 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/create-post",
+    name: "CreatePost",
+    component: CreatePostView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/users/:username/posts",
+    name: "UserPosts",
+    component: UserPostsView,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/admin",
     name: "admin",
     component: AdminDashboardView,
@@ -89,15 +105,20 @@ router.onError((error) => {
   router.push({ name: "home" });
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  const isAuthenticated = authStore.isAuthenticated;
-  const userRole = authStore.userRole;
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: "login" });
-    return;
+  if (to.meta.requiresAuth) {
+    if (!authStore.isAuthenticated) {
+      const isAuthenticated = await authStore.checkAuth();
+      if (!isAuthenticated) {
+        next({ name: "login" });
+        return;
+      }
+    }
   }
+
+  const userRole = authStore.userRole;
 
   if (to.meta.requiresAdmin && userRole !== "ADMIN") {
     next({ name: "home" });

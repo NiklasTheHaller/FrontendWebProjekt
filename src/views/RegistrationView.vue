@@ -275,7 +275,7 @@
       async validatePassword() {
         try {
           await Yup.string()
-            .min(8, "Password must be at least 8 characters")
+            .min(12, "Password must be at least 12 characters")
             .matches(
               /[A-Z]/,
               "Password must contain at least one uppercase letter"

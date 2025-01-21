@@ -1,7 +1,7 @@
 // src/store/authStore.js
 
 import { defineStore } from "pinia";
-import apiClient from "@/services/axios";
+import { baseApiClient } from "@/services/axios";
 import { jwtDecode } from "jwt-decode";
 import router from "@/router";
 
@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("authStore", {
     userRole: null,
     accessToken: null,
     refreshTimer: null,
+    identifier: null,
   }),
   actions: {
     /**
@@ -24,7 +25,7 @@ export const useAuthStore = defineStore("authStore", {
      */
     async login(identifier, password) {
       try {
-        const response = await apiClient.post(`${API_BASE_URL}`, {
+        const response = await baseApiClient.post(`${API_BASE_URL}`, {
           identifier,
           password,
         });
@@ -48,10 +49,12 @@ export const useAuthStore = defineStore("authStore", {
 
       const decoded = jwtDecode(accessToken);
       this.userRole = decoded.role;
+      this.identifier = decoded.sub;
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userRole", this.userRole);
+      localStorage.setItem("identifier", this.identifier);
 
       // Start monitoring token expiration
       this.startRefreshTimer();
@@ -86,7 +89,9 @@ export const useAuthStore = defineStore("authStore", {
     async logout() {
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        await apiClient.post(`${API_BASE_URL}/logout`, { token: refreshToken });
+        await baseApiClient.post(`${API_BASE_URL}/logout`, {
+          token: refreshToken,
+        });
       } catch (error) {
         console.error("Logout failed:", error);
       } finally {
@@ -101,6 +106,8 @@ export const useAuthStore = defineStore("authStore", {
       this.isAuthenticated = false;
       this.userRole = null;
       this.accessToken = null;
+      this.identifier = null;
+
       if (this.refreshTimer) {
         clearTimeout(this.refreshTimer);
         this.refreshTimer = null;
@@ -108,33 +115,37 @@ export const useAuthStore = defineStore("authStore", {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userRole");
+      localStorage.removeItem("identifier");
     },
 
     /**
      * Checks if the current token is valid by verifying with the backend.
      */
+    // In src/store/authStore.js
     async checkAuth() {
       const token = this.accessToken || localStorage.getItem("accessToken");
       if (!token) {
         this.clearAuthState();
-        router.push("/"); // Redirect to login
-        return;
+        return false; // Return false instead of redirecting
       }
 
       try {
-        const response = await apiClient.get(
+        const response = await baseApiClient.get(
           `${API_BASE_URL}/check?token=${encodeURIComponent(token)}`
         );
         this.isAuthenticated = true;
         this.userRole = response.data.role;
+        return true; // Return true on success
       } catch (error) {
         console.error("Auth check failed:", error);
         try {
           await this.refreshToken();
+          return true; // Return true if refresh successful
         } catch (refreshError) {
           console.error("Token refresh failed:", refreshError);
           this.clearAuthState();
-          router.push("/login"); // Redirect to login after failed refresh
+          router.push("/login");
+          return false; // Return false if both checks fail
         }
       }
     },
@@ -150,7 +161,7 @@ export const useAuthStore = defineStore("authStore", {
           throw new Error("Invalid or missing refresh token");
         }
 
-        const response = await apiClient.post(`${API_BASE_URL}/refresh`, {
+        const response = await baseApiClient.post(`${API_BASE_URL}/refresh`, {
           token: refreshToken,
         });
 

@@ -44,39 +44,29 @@ export async function fetchUserProfile() {
  * @throws {Error} - If updating fails.
  */
 export async function updateUserProfile(payload) {
+  if (!payload) {
+    throw new Error("Update payload is required");
+  }
+
   try {
-    // Fetch the user profile to get the ID
     const userProfile = await fetchUserProfile();
 
-    console.log("User Profile:", userProfile);
-    console.log("Payload:", payload);
-
-    // Ensure the profile contains an ID
-    if (!userProfile.id) {
-      throw new Error(
-        "User ID is missing in the fetched profile. Cannot update user."
-      );
-    }
-
-    // Prepare the final payload
+    // Only include fields that are present in the payload
     const finalPayload = {
-      username: payload.username.trim(), // Ensure no trailing spaces
-      email: payload.email.trim(), // Ensure email is properly formatted
-      password: payload.password, // Password validation should already be done
-      role: "USER", // Hardcoded role
-      salutation: payload.salutation,
-      country: payload.country,
+      ...(payload.username && { username: payload.username.trim() }),
+      ...(payload.email && { email: payload.email.trim() }),
+      ...(payload.password && { password: payload.password }),
+      role: "USER",
+      ...(payload.salutation && { salutation: payload.salutation }),
+      ...(payload.country && { country: payload.country }),
+      ...(payload.fileId && { fileId: payload.fileId }), // Include fileId only if it exists
     };
 
-    console.log("Final Payload:", finalPayload);
-
-    // Perform the update API call
     const response = await apiClient.put(
       `/api/users/${userProfile.id}`,
       finalPayload
     );
 
-    // Return the updated user data
     return response.data;
   } catch (error) {
     console.error("Failed to update user profile:", error);

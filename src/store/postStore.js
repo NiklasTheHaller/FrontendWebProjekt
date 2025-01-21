@@ -33,19 +33,16 @@ import { postService } from "@/services/postService";
 
 export const usePostStore = defineStore("post", {
   state: () => ({
-    /** @type {Post[]} */
     posts: [],
-    /** @type {Post|null} */
+    userPosts: [],
     currentPost: null,
-    /** @type {boolean} */
     loading: false,
-    /** @type {string|null} */
     error: null,
   }),
 
   getters: {
     getAllPosts: (state) => state.posts,
-    getPostById: (state) => (id) => state.posts.find((post) => post.id === id),
+    getUserPosts: (state) => state.userPosts,
     isLoading: (state) => state.loading,
   },
 
@@ -55,10 +52,37 @@ export const usePostStore = defineStore("post", {
       this.error = null;
       try {
         const data = await postService.getAllPosts();
-        console.log("Fetched Posts:", data); // Add this line
         this.posts = data;
       } catch (err) {
         this.error = err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchUserPosts(username) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const data = await postService.getPostsByUsername(username);
+        this.userPosts = data;
+      } catch (err) {
+        this.error = err.message;
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchPostById(id) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const data = await postService.getPostById(id);
+        this.currentPost = data;
+      } catch (err) {
+        this.error = err.message;
+        throw err;
       } finally {
         this.loading = false;
       }
@@ -85,6 +109,8 @@ export const usePostStore = defineStore("post", {
       try {
         await postService.deletePost(id);
         this.posts = this.posts.filter((post) => post.id !== id);
+        this.userPosts = this.userPosts.filter((post) => post.id !== id);
+        this.currentPost = null;
       } catch (err) {
         this.error = err.message;
         throw err;
@@ -109,6 +135,12 @@ export const usePostStore = defineStore("post", {
       } finally {
         this.loading = false;
       }
+    },
+
+    clearCache() {
+      this.lastFetch = null;
+      this.posts = [];
+      this.userPosts = [];
     },
   },
 });

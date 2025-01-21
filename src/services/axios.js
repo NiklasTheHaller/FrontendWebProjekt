@@ -25,6 +25,11 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+export const baseApiClient = axios.create({
+  baseURL: process.env.VITE_API_BASE_URL || "http://localhost:8080",
+  withCredentials: true,
+});
+
 // Request Interceptor
 apiClient.interceptors.request.use(
   (config) => {
