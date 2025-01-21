@@ -1,41 +1,41 @@
-// router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/store/authStore";
 
 // Import views with explicit chunk names for better error handling
 const HomeView = () =>
-  import(/* webpackChunkName: "home" */ "../views/HomeView.vue");
+    import(/* webpackChunkName: "home" */ "../views/HomeView.vue");
 const AboutView = () =>
-  import(/* webpackChunkName: "about" */ "../views/AboutView.vue");
+    import(/* webpackChunkName: "about" */ "../views/AboutView.vue");
 const LoginView = () =>
-  import(/* webpackChunkName: "login" */ "../views/LoginView.vue");
+    import(/* webpackChunkName: "login" */ "../views/LoginView.vue");
 const RegistrationView = () =>
-  import(
-    /* webpackChunkName: "registration" */ "../views/RegistrationView.vue"
-  );
+    import(/* webpackChunkName: "registration" */ "../views/RegistrationView.vue");
 const ProfileView = () =>
-  import(/* webpackChunkName: "profile" */ "../views/ProfileView.vue");
+    import(/* webpackChunkName: "profile" */ "../views/ProfileView.vue");
 const FeedView = () =>
-  import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
+    import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
 const CreatePostView = () =>
-  import(/* webpackChunkName: "login" */ "../views/CreatePostView.vue");
+    import(/* webpackChunkName: "login" */ "../views/CreatePostView.vue");
 const AdminDashboardView = () =>
-  import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
+    import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
 const ImprintView = () =>
-  import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
+    import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
 const HelpView = () =>
-  import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
+    import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
 const UserPostsView = () =>
-  import(/* webpackChunkName: "help" */ "../views/UserPostsView.vue");
+    import(/* webpackChunkName: "help" */ "../views/UserPostsView.vue");
 const PostView = () =>
-  import(/* webpackChunkName: "help" */ "../views/PostView.vue");
+    import(/* webpackChunkName: "help" */ "../views/PostView.vue");
+const AdminResourcesView = () =>
+    import(/* webpackChunkName: "admin-resources" */ "../views/AdminResourcesView.vue");
+const AdminUsersView = () =>
+    import(/* webpackChunkName: "admin-users" */ "../views/AdminUsersView.vue");
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: HomeView,
-    // Add error handling for component loading
     props: true,
   },
   {
@@ -84,6 +84,18 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
+    path: "/admin/resources",
+    name: "AdminResources",
+    component: AdminResourcesView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/admin/users",
+    name: "AdminUsers",
+    component: AdminUsersView,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
     path: "/imprint",
     name: "imprint",
     component: ImprintView,
@@ -109,7 +121,6 @@ const router = createRouter({
 // Add global error handler for navigation failures
 router.onError((error) => {
   console.error("Router error:", error);
-  // Redirect to home page or error page if needed
   router.push({ name: "home" });
 });
 

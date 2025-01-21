@@ -31,18 +31,51 @@
               {{ item.name }}
             </router-link>
 
-            <!-- Admin Link -->
-            <router-link
-              v-if="isAdmin"
-              to="/admin"
-              class="px-3 py-2 rounded-md text-neutral-600 hover:text-primary-DEFAULT hover:bg-neutral-200 transition-colors"
-              active-class="text-primary-DEFAULT bg-neutral-200"
-            >
-              Admin
-            </router-link>
+            <!-- Admin Submenu -->
+            <div class="relative">
+              <!-- Admin Button -->
+              <button
+                  @click="showDropdown = !showDropdown"
+                  class="px-3 py-2 rounded-md text-neutral-600 hover:text-primary-DEFAULT hover:bg-neutral-200 transition-colors"
+              >
+                Admin
+              </button>
+
+              <!-- Dropdown Menu -->
+              <ul
+                  v-if="showDropdown"
+                  class="absolute bg-neutral-100 shadow-md rounded-lg mt-2 w-48 z-50"
+              >
+                <li>
+                  <router-link
+                      to="/admin"
+                      class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                  >
+                    Dashboard
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                      to="/admin/resources"
+                      class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                  >
+                    Manage Resources
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                      to="/admin/users"
+                      class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                  >
+                    Manage Users
+                  </router-link>
+                </li>
+              </ul>
+            </div>
           </nav>
 
-          <!-- Auth Navigation -->
+
+            <!-- Auth Navigation -->
           <div class="flex items-center space-x-4">
             <template v-if="!isLoggedIn">
               <router-link
@@ -118,57 +151,59 @@
 </template>
 
 <script>
-  import { useAuthStore } from "./store/authStore";
-  import { useRouter } from "vue-router";
-  import { computed, ref, watch } from "vue";
+import { useAuthStore } from "./store/authStore";
+import { useRouter } from "vue-router";
+import { ref, computed, watch } from "vue";
 
-  export default {
-    setup() {
-      const authStore = useAuthStore();
-      const router = useRouter();
-      const selectedRole = ref("");
-      const navItems = ref([]);
+export default {
+  setup() {
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const showDropdown = ref(false); // State for dropdown visibility
+    const navItems = ref([]);
 
-      const username = computed(() => authStore.identifier);
+    const username = computed(() => authStore.identifier);
 
-      const mainNavItems = () => {
-        navItems.value = [
-          { name: "Home", path: "/" },
-          { name: "Feed", path: "/feed" },
-          { name: "Create Post", path: "/create-post" },
-          { name: "Profile", path: "/profile" },
-          { name: "My Posts", path: `/users/${username.value}/posts` },
-        ];
-      };
-
-      watch(() => authStore.identifier, mainNavItems, { immediate: true });
-
-      const footerNavItems = [
-        { name: "About", path: "/about" },
-        { name: "Help", path: "/help" },
-        { name: "Imprint", path: "/imprint" },
+    const mainNavItems = () => {
+      navItems.value = [
+        { name: "Home", path: "/" },
+        { name: "Feed", path: "/feed" },
+        { name: "Create Post", path: "/create-post" },
+        { name: "Profile", path: "/profile" },
+        { name: "My Posts", path: `/users/${username.value}/posts` },
       ];
+    };
 
-      const isLoggedIn = computed(() => authStore.isAuthenticated);
-      const isAdmin = computed(
+    watch(() => authStore.identifier, mainNavItems, { immediate: true });
+
+    const footerNavItems = [
+      { name: "About", path: "/about" },
+      { name: "Help", path: "/help" },
+      { name: "Imprint", path: "/imprint" },
+    ];
+
+    const isLoggedIn = computed(() => authStore.isAuthenticated);
+    const isAdmin = computed(
         () =>
-          authStore.userRole === "ADMIN" ||
-          localStorage.getItem("userRole") === "ADMIN"
-      );
+            authStore.userRole === "ADMIN" ||
+            localStorage.getItem("userRole") === "ADMIN"
+    );
 
-      function logout() {
-        authStore.logout();
-        selectedRole.value = "";
-        router.push("/login");
-      }
+    function logout() {
+      authStore.logout();
+      router.push("/login");
+    }
 
-      return {
-        logout,
-        isLoggedIn,
-        isAdmin,
-        mainNavItems: navItems,
-        footerNavItems,
-      };
-    },
-  };
+    return {
+      logout,
+      isLoggedIn,
+      isAdmin,
+      mainNavItems: navItems,
+      footerNavItems,
+      showDropdown,
+    };
+  },
+};
 </script>
+
+
