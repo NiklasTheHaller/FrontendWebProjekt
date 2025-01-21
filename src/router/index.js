@@ -27,8 +27,6 @@ const HelpView = () =>
   import(/* webpackChunkName: "help" */ "../views/HelpView.vue");
 const UserPostsView = () =>
   import(/* webpackChunkName: "help" */ "../views/UserPostsView.vue");
-const PostView = () =>
-  import(/* webpackChunkName: "help" */ "../views/PostView.vue");
 
 const routes = [
   {
@@ -92,12 +90,6 @@ const routes = [
     path: "/help",
     name: "help",
     component: HelpView,
-  },
-  {
-    path: "/post/:id",
-    name: "post",
-    component: PostView,
-    meta: { requiresAuth: true },
   },
 ];
 

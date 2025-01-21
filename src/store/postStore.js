@@ -38,32 +38,21 @@ export const usePostStore = defineStore("post", {
     currentPost: null,
     loading: false,
     error: null,
-    lastFetch: null,
-    cacheDuration: 5 * 60 * 1000, // 5 minutes in milliseconds
   }),
 
   getters: {
     getAllPosts: (state) => state.posts,
     getUserPosts: (state) => state.userPosts,
     isLoading: (state) => state.loading,
-    shouldRefetch: (state) => {
-      if (!state.lastFetch) return true;
-      return Date.now() - state.lastFetch > state.cacheDuration;
-    },
   },
 
   actions: {
-    async fetchPosts(forceRefresh = false) {
-      if (!forceRefresh && !this.shouldRefetch && this.posts.length > 0) {
-        return this.posts;
-      }
-
+    async fetchPosts() {
       this.loading = true;
       this.error = null;
       try {
         const data = await postService.getAllPosts();
         this.posts = data;
-        this.lastFetch = Date.now();
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -120,6 +109,8 @@ export const usePostStore = defineStore("post", {
       try {
         await postService.deletePost(id);
         this.posts = this.posts.filter((post) => post.id !== id);
+        this.userPosts = this.userPosts.filter((post) => post.id !== id);
+        this.currentPost = null;
       } catch (err) {
         this.error = err.message;
         throw err;
@@ -149,6 +140,7 @@ export const usePostStore = defineStore("post", {
     clearCache() {
       this.lastFetch = null;
       this.posts = [];
+      this.userPosts = [];
     },
   },
 });

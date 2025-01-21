@@ -129,7 +129,7 @@
         fileId: fileId,
       });
 
-      router.push("/");
+      router.push("/feed");
     } catch (err) {
       error.value = err.message;
     } finally {

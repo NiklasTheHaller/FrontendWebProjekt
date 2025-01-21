@@ -1,6 +1,6 @@
 <template>
   <article
-    @click="navigateToPost"
+    @click="handlePostClick"
     class="cursor-pointer bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
   >
     <!-- Media Preview -->
@@ -44,8 +44,7 @@
 </template>
 
 <script setup>
-  import { defineProps, computed } from "vue";
-  import { useRouter } from "vue-router";
+  import { defineProps, computed, defineEmits } from "vue";
   import MediaViewer from "../atoms/MediaViewer.vue";
   import { useLikeStore } from "@/store/likeStore";
 
@@ -56,15 +55,17 @@
     },
   });
 
-  const router = useRouter();
+  const emit = defineEmits(["click-post"]);
+
   const likeStore = useLikeStore();
 
   const likesCount = computed(
     () => likeStore.getLikesForPost(props.post.id).length
   );
 
-  const navigateToPost = () => {
-    router.push(`/post/${props.post.id}`);
+  // Remove router navigation
+  const handlePostClick = () => {
+    emit("click-post", props.post);
   };
 
   const formatDate = (date) => {

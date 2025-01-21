@@ -25,27 +25,60 @@
           v-for="post in sortedUserPosts"
           :key="post.id"
           :post="post"
+          @click-post="openPostModal"
         />
       </div>
-      <div v-else>
-        <p class="text-center text-gray-500">No posts available.</p>
+
+      <div
+        v-else
+        class="text-center text-gray-500"
+      >
+        <p>No posts available.</p>
       </div>
+
+      <!-- Post Modal -->
+      <PostModal
+        v-if="selectedPost"
+        v-model="showPostModal"
+        :post="selectedPost"
+        @post-deleted="handlePostDeleted"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-  import { onMounted, computed } from "vue";
+  import { onMounted, computed, ref } from "vue";
   import { useRoute } from "vue-router";
   import { storeToRefs } from "pinia";
   import { usePostStore } from "@/store/postStore";
   import UserPostPreview from "@/components/organisms/UserPostPreview.vue";
+  import PostModal from "@/components/organisms/PostModal.vue";
 
   const route = useRoute();
   const username = computed(() => route.params.username);
   const postStore = usePostStore();
 
+  const showPostModal = ref(false);
+  const selectedPost = ref(null);
+
   const { userPosts, loading, error } = storeToRefs(postStore);
+
+  const openPostModal = (post) => {
+    selectedPost.value = post;
+    showPostModal.value = true;
+  };
+
+  const handlePostDeleted = async (postId) => {
+    try {
+      await postStore.deletePost(postId);
+      selectedPost.value = null;
+      showPostModal.value = false;
+      await postStore.fetchUserPosts(username.value);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+    }
+  };
 
   onMounted(async () => {
     await postStore.fetchUserPosts(username.value);

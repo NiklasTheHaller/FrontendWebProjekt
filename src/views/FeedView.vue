@@ -27,7 +27,10 @@
               v-for="post in sortedPosts"
               :key="post.id"
             >
-              <UserPost :post="post" />
+              <UserPost
+                :post="post"
+                @post-deleted="handlePostDeleted"
+              />
             </li>
           </ul>
         </div>
@@ -50,6 +53,11 @@
   onMounted(async () => {
     await postStore.fetchPosts();
   });
+
+  const handlePostDeleted = (postId) => {
+    // Stay on feed, post will be removed from store automatically
+    console.log("Post deleted:", postId);
+  };
 
   const { posts, loading, error } = storeToRefs(postStore);
 

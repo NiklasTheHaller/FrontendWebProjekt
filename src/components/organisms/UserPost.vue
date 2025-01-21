@@ -74,7 +74,7 @@
           v-if="post.file"
           class="relative w-full aspect-[4/5] max-h-[600px] rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50 border border-gray-100/50 dark:border-gray-800/50 shadow-sm"
         >
-          <div class="media-container">
+          <div class="media-container flex-shrink-0">
             <MediaViewer
               :file-uuid="post.file.uuid"
               :file-name="post.file.fileName"
@@ -131,18 +131,18 @@
 
             <div
               v-if="showActions"
-              class="absolute right-0 bottom-full mb-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5"
+              class="absolute right-0 bottom-full mb-2 w-48 rounded-lg shadow-lg bg-white/90 backdrop-blur-sm border border-gray-200"
             >
               <div class="py-1">
                 <button
                   @click="startEdit"
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                 >
                   <i class="fas fa-edit mr-2"></i> Edit Post
                 </button>
                 <button
                   @click="confirmDelete"
-                  class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors duration-150"
                 >
                   <i class="fas fa-trash-alt mr-2"></i> Delete Post
                 </button>
@@ -155,7 +155,7 @@
 
     <!-- Delete Confirmation Modal -->
     <BaseModal
-      v-if="showDeleteConfirm"
+      v-model="showDeleteConfirm"
       @close="showDeleteConfirm = false"
     >
       <template #header>
@@ -188,14 +188,21 @@
 </template>
 
 <script setup>
-  import { defineProps, toRefs, onMounted, computed, ref } from "vue";
+  import {
+    defineProps,
+    defineEmits,
+    toRefs,
+    onMounted,
+    computed,
+    ref,
+  } from "vue";
   import MediaViewer from "../atoms/MediaViewer.vue";
   import BaseButton from "../atoms/BaseButton.vue";
   import { useProfilePicture } from "@/services/profilePictureService";
   import { useLikeStore } from "@/store/likeStore";
   import { useAuthStore } from "@/store/authStore";
   import { usePostStore } from "@/store/postStore";
-  import { BaseModal } from "@/components/atoms/BaseModal.vue";
+  import BaseModal from "../atoms/BaseModal.vue";
   const props = defineProps({
     post: {
       type: Object,
@@ -231,10 +238,6 @@
     const currentUser = authStore.identifier;
     const postUsername = post.value.username;
 
-    console.log("Current User:", currentUser);
-    console.log("Post Username:", postUsername);
-    console.log("Is Own Post:", currentUser === postUsername);
-
     return currentUser === postUsername;
   });
 
@@ -268,9 +271,12 @@
     showActions.value = false;
   };
 
+  const emit = defineEmits(["post-deleted"]);
+
   const deletePost = async () => {
     try {
       await postStore.deletePost(post.value.id);
+      emit("post-deleted", post.value.id);
       showDeleteConfirm.value = false;
     } catch (error) {
       console.error("Failed to delete post:", error);

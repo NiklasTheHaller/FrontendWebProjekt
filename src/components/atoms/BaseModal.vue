@@ -1,85 +1,74 @@
-<template>
-  <Teleport to="body">
-    <div
-      v-if="props.modelValue || props.show"
-      class="fixed inset-0 z-50 overflow-y-auto"
-      role="dialog"
-      aria-modal="true"
-    >
-      <!-- Backdrop -->
-      <div
-        class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-        @click="handleClose"
-      ></div>
-
-      <!-- Modal -->
-      <div class="flex min-h-screen items-center justify-center p-4">
-        <div
-          class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 p-6 text-left shadow-xl transition-all"
-          @click.stop
-        >
-          <!-- Close Button -->
-          <button
-            @click="handleClose"
-            class="absolute right-4 top-4 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
-            aria-label="Close modal"
-          >
-            <i class="fas fa-times text-xl"></i>
-          </button>
-
-          <!-- Header -->
-          <div class="mb-4">
-            <slot name="header"></slot>
-          </div>
-
-          <!-- Body -->
-          <div class="mb-6">
-            <slot name="body"></slot>
-          </div>
-
-          <!-- Footer -->
-          <div class="mt-4 flex justify-end gap-2">
-            <slot name="footer"></slot>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Teleport>
-</template>
-
 <script setup>
   import { defineProps, defineEmits } from "vue";
 
   const props = defineProps({
     modelValue: {
       type: Boolean,
-      default: false,
+      required: true,
     },
-    show: {
-      type: Boolean,
-      default: false,
+    customClass: {
+      type: [String, Object, Array],
+      default: "",
     },
   });
 
   const emit = defineEmits(["update:modelValue", "close"]);
 
-  const handleClose = () => {
+  const closeModal = () => {
     emit("update:modelValue", false);
     emit("close");
   };
 </script>
 
-<style scoped>
-  .fixed {
-    animation: fadeIn 0.2s ease-out;
-  }
+<template>
+  <Teleport to="body">
+    <div
+      v-if="modelValue"
+      :class="[customClass, { 'is-open': props.modelValue }]"
+      class="fixed inset-0 flex items-center justify-center z-50"
+    >
+      <!-- Overlay -->
+      <div
+        class="absolute inset-0 bg-neutral-700 bg-opacity-75"
+        @click="closeModal"
+      ></div>
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-</style>
+      <!-- Modal content -->
+      <div
+        class="relative bg-neutral-100 dark:bg-gray-800 rounded-lg p-6 w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto"
+      >
+        <button
+          class="absolute top-4 right-4 text-neutral-500 hover:text-neutral-600"
+          @click="closeModal"
+        >
+          <span class="sr-only">Close</span>
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
+        <div class="mb-4">
+          <slot name="header"></slot>
+        </div>
+
+        <div class="mb-4">
+          <slot name="body"></slot>
+        </div>
+
+        <div class="mt-6">
+          <slot name="footer"></slot>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
