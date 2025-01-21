@@ -226,16 +226,20 @@
   const editedContent = ref("");
   const showDeleteConfirm = ref(false);
 
-  // Check if current user owns the post
+  // Check if current user owns the post or the user is an admin
   const isOwnPost = computed(() => {
-    const currentUser = authStore.identifier;
-    const postUsername = post.value.username;
+    const currentUser = authStore.identifier; // Current user's identifier
+    const postUsername = post.value.username; // Post's username
+    const userRole = authStore.userRole; // User's role (e.g., 'admin', 'user')
 
+    const isAdmin = userRole === "ADMIN"; // Determine if the user is an admin
     console.log("Current User:", currentUser);
     console.log("Post Username:", postUsername);
-    console.log("Is Own Post:", currentUser === postUsername);
+    console.log("User Role:", userRole);
+    console.log("Is Admin:", isAdmin);
+    console.log("Is Own Post:", currentUser === postUsername || isAdmin);
 
-    return currentUser === postUsername;
+    return currentUser === postUsername || isAdmin;
   });
 
   // Edit functions
