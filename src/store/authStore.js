@@ -48,8 +48,8 @@ export const useAuthStore = defineStore("authStore", {
       this.isAuthenticated = true;
 
       const decoded = jwtDecode(accessToken);
-      this.userRole = decoded.role;
-      this.identifier = decoded.sub;
+      this.userRole = decoded.role || localStorage.getItem("userRole");
+      this.identifier = decoded.sub|| localStorage.getItem("identifier");
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
@@ -130,12 +130,18 @@ export const useAuthStore = defineStore("authStore", {
       }
 
       try {
-        const response = await baseApiClient.get(
-          `${API_BASE_URL}/check?token=${encodeURIComponent(token)}`
-        );
-        this.isAuthenticated = true;
-        this.userRole = response.data.role;
-        return true; // Return true on success
+
+        if(await baseApiClient.get(
+            `${API_BASE_URL}/check?token=${encodeURIComponent(token)}`))
+        {
+          this.isAuthenticated = true
+          const decoded = jwtDecode(token);
+          this.userRole = decoded.role || localStorage.getItem("userRole");
+          this.identifier = decoded.sub|| localStorage.getItem("identifier");
+          return true; // Return true on success
+        }
+        return false; // Return true on success
+
       } catch (error) {
         console.error("Auth check failed:", error);
         try {
