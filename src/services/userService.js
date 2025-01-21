@@ -83,3 +83,67 @@ export async function updateUserProfile(payload) {
     throw error;
   }
 }
+
+/**
+ * Fetches all users for admin purposes.
+ * @returns {Object} - List of all users.
+ * @throws {Error} - If fetching fails.
+ */
+export async function fetchAllUsers() {
+  console.log("Fetching users..."); // Log when the function starts
+  try {
+    const response = await apiClient.get("/api/users");
+    console.log("API response:", response.data); // Log the API data
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch all users:", error);
+    throw error;
+  }
+}
+
+/**
+ * Updates a user's details (e.g., role, profile).
+ * @param {string} userId - The user's ID.
+ * @param {Object} payload - The data to update the user.
+ * @returns {Object} - The updated user data.
+ * @throws {Error} - If updating fails.
+ */
+export async function updateUserDetails(userId, payload) {
+  try {
+    const response = await apiClient.put(`/api/users/${userId}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update user details:", error);
+    throw error;
+  }
+}
+
+/**
+ * Locks a user out of the application.
+ * @param {string} userId - The user's ID.
+ * @returns {void}
+ * @throws {Error} - If locking fails.
+ */
+export async function lockUser(userId) {
+  try {
+    await apiClient.post(`/api/users/${userId}/lock`);
+  } catch (error) {
+    console.error("Failed to lock user:", error);
+    throw error;
+  }
+}
+
+/**
+ * Deletes a user from the system.
+ * @param {string} userId - The user's ID.
+ * @returns {void}
+ * @throws {Error} - If deletion fails.
+ */
+export async function deleteUser(userId) {
+  try {
+    await apiClient.delete(`/api/users/${userId}`);
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    throw error;
+  }
+}

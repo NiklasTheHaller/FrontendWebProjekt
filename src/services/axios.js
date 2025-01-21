@@ -32,17 +32,20 @@ export const baseApiClient = axios.create({
 
 // Request Interceptor
 apiClient.interceptors.request.use(
-  (config) => {
-    const authStore = useAuthStore();
-    const token = authStore.accessToken || localStorage.getItem("accessToken");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    (config) => {
+        const authStore = useAuthStore();
+        const token = authStore.accessToken || localStorage.getItem("accessToken");
+
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
+        config.retryCount = config.retryCount || 0; // Initialize retry count
+        return config;
+    },
+    (error) => {
+        console.error("Request Interceptor Error:", error);
+        return Promise.reject(error);
     }
-    // Initialize retry count if not present
-    config.retryCount = config.retryCount || 0;
-    return config;
-  },
-  (error) => Promise.reject(error)
 );
 
 // Response Interceptor
