@@ -80,6 +80,7 @@
                     <router-link
                         to="/admin"
                         class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                        @click="showDropdown = false"
                     >
                       Dashboard
                     </router-link>
@@ -88,6 +89,7 @@
                     <router-link
                         to="/admin/resources"
                         class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                        @click="showDropdown = false"
                     >
                       Manage Resources
                     </router-link>
@@ -96,6 +98,7 @@
                     <router-link
                         to="/admin/users"
                         class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                        @click="showDropdown = false"
                     >
                       Manage Users
                     </router-link>
