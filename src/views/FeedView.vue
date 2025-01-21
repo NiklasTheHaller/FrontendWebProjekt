@@ -45,7 +45,7 @@
 <script setup>
   import { onMounted, computed } from "vue";
   import { storeToRefs } from "pinia";
-  import { usePostStore } from "../store/postStore";
+  import { usePostStore } from "@/store/postStore";
   import UserPost from "../components/organisms/UserPost.vue";
 
   const postStore = usePostStore();
