@@ -34,6 +34,7 @@ export const postService = {
 
   async deletePost(id) {
     await apiClient.delete(`${API_URL}/api/posts/${id}`);
+    return true;
   },
 
   async updatePost(id, postData) {
