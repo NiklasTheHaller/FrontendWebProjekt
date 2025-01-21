@@ -481,8 +481,8 @@
         }
 
         // Password strength validation (example: minimum 8 characters)
-        if (passwordValue.value.length < 8) {
-          passwordError.value = "Password must be at least 8 characters long.";
+        if (passwordValue.value.length < 12) {
+          passwordError.value = "Password must be at least 12 characters long.";
           return;
         }
 
