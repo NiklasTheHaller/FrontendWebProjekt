@@ -21,7 +21,6 @@ Ensure the following tools are installed:
 - **Axios**: HTTP client for making API requests
 - **Vee-Validate**: For form validation
 - **Yup**: Schema-based validation library
-- **Lodash**: Utility library for JavaScript
 - **JWT Decode**: To handle JWT tokens
 - **bcryptjs**: For client-side password hashing
 - **Country List**: For handling country data
