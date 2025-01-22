@@ -28,7 +28,7 @@
           v-if="filteredPosts.length"
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
-        <UserPostPreview
+        <UserPostAdminPreview
             v-for="post in filteredPosts"
             :key="post.id"
             :post="post"
@@ -54,7 +54,7 @@
 import { ref, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useAllPostsStore } from "@/store/allPostsStore";
-import UserPostPreview from "@/components/organisms/UserPostPreview.vue";
+import UserPostAdminPreview from "@/components/organisms/UserPostAdminPreview.vue";
 import PostModal from "@/components/organisms/PostModal.vue";
 
 // Post store
