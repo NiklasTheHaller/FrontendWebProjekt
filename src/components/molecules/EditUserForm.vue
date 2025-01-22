@@ -260,8 +260,8 @@
 
       // Clear previous errors
       profilePictureError.value = "";
-
       selectedFile.value = file;
+      previewImage.value = URL.createObjectURL(file);
     }
   };
 
