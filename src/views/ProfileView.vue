@@ -227,6 +227,7 @@
       const emailValue = ref("");
       const passwordValue = ref("");
       const repeatPasswordValue = ref("");
+      const role = useAuthStore().userRole;
       const salutation = ref("");
       const otherSalutation = ref("");
       const otherSalutationError = ref("");
@@ -440,6 +441,7 @@
         const data = {
           username: usernameValue.value,
           email: emailValue.value,
+          role: role,
           salutation:
             salutation.value === "other"
               ? otherSalutation.value
