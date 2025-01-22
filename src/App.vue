@@ -78,15 +78,6 @@
                 >
                   <li>
                     <router-link
-                        to="/admin"
-                        class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
-                        @click="showDropdown = false"
-                    >
-                      Dashboard
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link
                         to="/admin/resources"
                         class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
                         @click="showDropdown = false"
@@ -153,15 +144,44 @@
             {{ item.name }}
           </router-link>
 
-          <router-link
-            v-if="isAdmin"
-            to="/admin"
-            class="block px-3 py-2 rounded-md text-neutral-600 hover:text-primary-DEFAULT hover:bg-neutral-200 transition-colors"
-            active-class="text-primary-DEFAULT bg-neutral-200"
-            @click="isMobileMenuOpen = false"
-          >
-            Admin
-          </router-link>
+          <!-- Admin Submenu -->
+          <div class="relative">
+            <template v-if="isLoggedIn && isAdmin">
+
+              <!-- Admin Button -->
+              <button
+                  @click="showDropdown = !showDropdown"
+                  class="px-3 py-2 rounded-md text-neutral-600 hover:text-primary-DEFAULT hover:bg-neutral-200 transition-colors"
+              >
+                Admin
+              </button>
+
+              <!-- Dropdown Menu -->
+              <ul
+                  v-if="showDropdown"
+                  class="absolute bg-neutral-100 shadow-md rounded-lg mt-2 w-48 z-50"
+              >
+                <li>
+                  <router-link
+                      to="/admin/resources"
+                      class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                      @click="showDropdown = false"
+                  >
+                    Manage Resources
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                      to="/admin/users"
+                      class="block px-4 py-2 hover:bg-neutral-200 rounded-md"
+                      @click="showDropdown = false"
+                  >
+                    Manage Users
+                  </router-link>
+                </li>
+              </ul>
+            </template>
+          </div>
 
           <template v-if="!isLoggedIn">
             <router-link
