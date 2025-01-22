@@ -19,6 +19,16 @@ export const userService = {
     return decoded.sub; // Assuming 'sub' contains the username
   },
 
+  getIdentifierFromToken() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No token found");
+    }
+
+    const decoded = jwtDecode(token);
+    return decoded.userId || localStorage.getItem("identifier"); // Assuming 'sub' contains the username
+  },
+
   /**
    * Fetches the user profile based on the username from the token.
    * @returns {Object} - The user profile data.
@@ -27,6 +37,11 @@ export const userService = {
   async fetchUserProfile() {
     const username = this.getUsernameFromToken();
     const response = await apiClient.get(`${API_URL}/api/users/username/${username}`);
+    return response.data;
+  },
+
+  async fetchUserById(id) {
+    const response = await apiClient.get(`${API_URL}/api/users/${id}`);
     return response.data;
   },
 

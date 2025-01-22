@@ -73,6 +73,7 @@ const filteredUsers = computed(() => {
       user.username.toLowerCase().includes(query)
   );
 });
+
 </script>
 
 

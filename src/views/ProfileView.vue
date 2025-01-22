@@ -492,6 +492,7 @@
         const data = {
           username: usernameValue.value,
           email: emailValue.value,
+          role: role,
           salutation:
             salutation.value === "other"
               ? otherSalutation.value

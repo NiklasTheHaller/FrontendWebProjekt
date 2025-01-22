@@ -35,7 +35,7 @@
               }"
               class="px-2 py-1 text-white rounded"
           >
-            {{ user.locked ? "Locked" : "Lock" }}
+            {{ user.locked ? "Unlock" : "Lock" }}
           </button>
           <button
               @click="confirmDelete(user)"

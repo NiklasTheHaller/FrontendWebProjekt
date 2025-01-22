@@ -50,22 +50,41 @@ export const useAllUserStore = defineStore("allUserStore", {
         },
 
         // Update a user
-        async updateUser(id, userData) {
+        async lockUser(id) {
             this.loading = true;
             this.error = null;
+            let updatedUser = null;
             try {
-                const updatedUser = await userService.updateUserDetails(id, userData);
-                const index = this.users.findIndex((user) => user.id === id);
+                // Fetch the user details
+                const user = await userService.fetchUserById(id);
+
+                if (!user) {
+                    throw new Error(`User with ID ${id} not found`);
+                }
+
+                console.log("Locked status:", user.locked);
+                if(user.locked === true) {
+                    updatedUser = await userService.updateUserDetails(id, {locked: false});
+                }
+                else {
+                    updatedUser = await userService.updateUserDetails(id, {locked: true});
+                }
+
+                // Update the user in the local store
+                const index = this.users.findIndex((u) => u.id === id);
                 if (index !== -1) {
-                    this.users[index] = updatedUser; // Update user locally
+                    this.users[index] = updatedUser;
                 }
+
+                // Update currentUser if it's the same user
                 if (this.currentUser?.id === id) {
-                    this.currentUser = updatedUser; // Update currentUser if it matches
+                    this.currentUser = updatedUser;
                 }
+
                 return updatedUser;
             } catch (err) {
                 this.error = err.message;
-                console.error("Error updating user:", err);
+                console.error("Error locking user:", err);
                 throw err;
             } finally {
                 this.loading = false;

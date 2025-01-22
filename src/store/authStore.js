@@ -34,10 +34,19 @@ export const useAuthStore = defineStore("authStore", {
         this.setTokens(response.data.accessToken, response.data.refreshToken);
         return true;
       } catch (error) {
-        console.error("Login failed:", error);
-        return false;
+        if (error.response && error.response.status === 403) {
+          const errorMessage = error.response.data?.message;
+          if (errorMessage && errorMessage.includes("User account is locked")) {
+            console.error("Login failed: User account is locked.");
+            // Add additional handling for locked accounts if needed
+            return "locked"; // Return a specific status for locked accounts
+          }
+        }
+        console.error("Login failed:", error.message);
+        return false; // Return false for all other errors
       }
     },
+
 
     /**
      * Sets the access and refresh tokens in the state and localStorage.
