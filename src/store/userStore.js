@@ -1,14 +1,8 @@
 // src/store/allUserStore.js
 import { defineStore } from "pinia";
-import {
-  fetchAllUsers,
-  updateUserProfile,
-  lockUser,
-  deleteUser,
-  fetchUserProfile,
-} from "@/services/userService";
+import {userService} from "@/services/userService";
 
-export const useAllUserStore = defineStore("allUserStore", {
+export const useUserStore = defineStore("userStore", {
   state: () => ({
     users: [], // List of all users
     currentUser: null, // The current user's details
@@ -24,7 +18,7 @@ export const useAllUserStore = defineStore("allUserStore", {
       this.loading = true;
       this.error = null;
       try {
-        const response = await fetchAllUsers(); // Call the userService function
+        const response = await userService.fetchAllUsers(); // Call the userService function
         console.log("Fetched users:", response);
         this.users = await response;
       } catch (error) {
@@ -43,7 +37,7 @@ export const useAllUserStore = defineStore("allUserStore", {
       this.loading = true;
       this.error = null;
       try {
-        const response = await fetchUserProfile(username);
+        const response = await userService.fetchUserProfile(username);
         this.currentUser = response;
         return response;
       } catch (error) {
@@ -62,7 +56,7 @@ export const useAllUserStore = defineStore("allUserStore", {
      */
     async updateUser(identifier, data) {
       try {
-        const updatedUser = await updateUserProfile(data);
+        const updatedUser = await userService.updateUserProfile(data);
         this.currentUser = updatedUser;
         return updatedUser;
       } catch (error) {
@@ -77,7 +71,7 @@ export const useAllUserStore = defineStore("allUserStore", {
      */
     async lockUser(userId) {
       try {
-        await lockUser(userId);
+        await userService.lockUser(userId);
         this.users = this.users.map((user) =>
           user.id === userId ? { ...user, locked: true } : user
         );
@@ -93,7 +87,7 @@ export const useAllUserStore = defineStore("allUserStore", {
      */
     async deleteUser(userId) {
       try {
-        await deleteUser(userId);
+        await userService.deleteUser(userId);
         this.users = this.users.filter((user) => user.id !== userId);
       } catch (error) {
         console.error("Error deleting user:", error);

@@ -197,7 +197,7 @@
 <script>
   import { ref, onMounted, computed, watch, onBeforeUnmount } from "vue";
   import { useAuthStore } from "@/store/authStore";
-  import { useAllUserStore } from "@/store/userStore";
+  import { useUserStore} from "@/store/userStore";
   import FormInput from "@/components/molecules/FormInput.vue";
   import BaseButton from "@/components/atoms/BaseButton.vue";
   import SearchableSelect from "@/components/molecules/SearchableSelect.vue";
@@ -219,7 +219,7 @@
     },
     setup() {
       const authStore = useAuthStore();
-      const userStore = useAllUserStore();
+      const userStore = useUserStore();
       const fileStore = useFileStore();
 
       // Reactive form fields

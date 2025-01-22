@@ -38,7 +38,7 @@
             {{ user.locked ? "Locked" : "Lock" }}
           </button>
           <button
-              @click="deleteUser(user.id)"
+              @click="confirmDelete(user)"
               class="px-2 py-1 bg-red-500 text-white rounded"
           >
             Delete
@@ -58,6 +58,13 @@ export default {
     lockUser: Function,
     deleteUser: Function,
     editUser: Function,
+  },
+  methods: {
+    confirmDelete(user) {
+      if (confirm(`Are you sure you want to delete ${user.username}?`)) {
+        this.deleteUser(user.id);
+      }
+    },
   },
 };
 </script>
