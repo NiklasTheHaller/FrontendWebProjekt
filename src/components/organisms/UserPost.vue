@@ -236,7 +236,7 @@
 
   // Check if current user owns the post or the user is an admin
   const isOwnPost = computed(() => {
-    const currentUser = authStore.identifier; // Current user's identifier
+    const currentUser = authStore.username; // Current user's username
     const postUsername = post.value.username; // Post's username
     const userRole = authStore.userRole; // User's role (e.g., 'admin', 'user')
 
