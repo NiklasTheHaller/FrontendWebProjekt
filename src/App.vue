@@ -249,7 +249,7 @@ export default {
     const showDropdown = ref(false); // State for dropdown visibility
     const navItems = ref([]);
 
-    const username = computed(() => authStore.identifier);
+    const username = computed(() => authStore.username);
 
     const mainNavItems = () => {
       navItems.value = [

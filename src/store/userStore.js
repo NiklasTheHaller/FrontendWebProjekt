@@ -54,16 +54,30 @@ export const useUserStore = defineStore("userStore", {
      * @param {string} userId - The ID of the user to update.
      * @param {Object} payload - The user details to update.
      */
-    async updateUser(identifier, data) {
+    // Update a user
+    async updateUser(id, userData) {
+      this.loading = true;
+      this.error = null;
       try {
-        const updatedUser = await userService.updateUserProfile(data);
-        this.currentUser = updatedUser;
+        const updatedUser = await userService.updateUserDetails(id, userData);
+        const index = this.users.findIndex((user) => user.id === id);
+        if (index !== -1) {
+          this.users[index] = updatedUser; // Update user locally
+        }
+        if (this.currentUser?.id === id) {
+          this.currentUser = updatedUser; // Update currentUser if it matches
+        }
         return updatedUser;
-      } catch (error) {
-        console.error("Error updating user:", error);
-        throw error;
+      } catch (err) {
+        this.error = err.message;
+        console.error("Error updating user:", err);
+        throw err;
+      } finally {
+        this.loading = false;
       }
     },
+
+
 
     /**
      * Lock a user and update the state.
