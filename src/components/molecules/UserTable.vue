@@ -21,28 +21,28 @@
         <td class="px-4 py-2">{{ user.email }}</td>
         <td class="px-4 py-2">{{ user.role }}</td>
         <td class="px-4 py-2 text-center space-x-2">
-          <button
+          <BaseButton
               @click="$emit('edit-user', user)"
               class="px-2 py-1 bg-blue-500 text-white rounded"
           >
             Edit
-          </button>
-          <button
+          </BaseButton>
+          <BaseButton
               @click="lockUser(user.id)"
               :class="{
-                'bg-orange-500': !user.locked,
+                'bg-yellow-500': !user.locked,
                 'bg-gray-400': user.locked,
               }"
               class="px-2 py-1 text-white rounded"
           >
             {{ user.locked ? "Unlock" : "Lock" }}
-          </button>
-          <button
+          </BaseButton>
+          <BaseButton
               @click="confirmDelete(user)"
               class="px-2 py-1 bg-red-500 text-white rounded"
           >
             Delete
-          </button>
+          </BaseButton>
         </td>
       </tr>
       </tbody>
@@ -51,7 +51,10 @@
 </template>
 
 <script>
+import BaseButton from "@/components/atoms/BaseButton.vue";
+
 export default {
+  components: { BaseButton },
   props: {
     users: Array,
     error: String,

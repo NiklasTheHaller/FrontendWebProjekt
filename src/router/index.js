@@ -16,8 +16,6 @@ const FeedView = () =>
     import(/* webpackChunkName: "feed" */ "../views/FeedView.vue");
 const CreatePostView = () =>
     import(/* webpackChunkName: "login" */ "../views/CreatePostView.vue");
-const AdminDashboardView = () =>
-    import(/* webpackChunkName: "admin" */ "../views/AdminDashboardView.vue");
 const ImprintView = () =>
     import(/* webpackChunkName: "imprint" */ "../views/ImprintView.vue");
 const HelpView = () =>
@@ -76,12 +74,6 @@ const routes = [
     name: "UserPosts",
     component: UserPostsView,
     meta: { requiresAuth: true },
-  },
-  {
-    path: "/admin",
-    name: "admin",
-    component: AdminDashboardView,
-    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: "/admin/resources",
