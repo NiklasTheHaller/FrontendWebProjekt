@@ -91,6 +91,45 @@ export const useAllUserStore = defineStore("allUserStore", {
             }
         },
 
+        // Update a user
+        async editUser(updatedUser) {
+            this.loading = true;
+            this.error = null;
+            let updatedUserDetails = null;
+
+            try {
+                console.log("Updated User Data in Store:", updatedUser);
+
+                // Send the updated data to the backend
+                updatedUserDetails = await userService.updateUserDetails(updatedUser.id, updatedUser);
+
+                console.log("Updated User from Backend:", updatedUserDetails);
+
+                // Update the user in the local store
+                const index = this.users.findIndex((u) => u.id === updatedUser.id);
+                if (index !== -1) {
+                    this.users[index] = updatedUserDetails;
+                }
+
+                // Update currentUser if it's the same user
+                if (this.currentUser?.id === updatedUser.id) {
+                    this.currentUser = updatedUserDetails;
+                }
+
+                return updatedUserDetails;
+            } catch (err) {
+                this.error = err.message;
+                console.error("Error updating user:", err);
+                throw err;
+            } finally {
+                this.loading = false;
+            }
+        },
+
+
+
+
+
         // Clear cache (optional, based on use case)
         clearCache() {
             this.users = [];

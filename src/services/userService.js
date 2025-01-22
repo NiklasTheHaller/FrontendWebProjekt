@@ -45,6 +45,11 @@ export const userService = {
     return response.data;
   },
 
+  async fetchUserByUsername(username) {
+    const response = await apiClient.get(`${API_URL}/api/users/username/${username}`);
+    return response.data;
+  },
+
   /**
    * Updates the user profile with the provided payload.
    * @param {Object} payload - The data to update the user profile.
