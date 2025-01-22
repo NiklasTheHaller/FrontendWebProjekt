@@ -102,6 +102,7 @@
               ></i>
               <span class="text-sm font-medium">
                 {{ likesCount }} {{ likesCount === 1 ? "Like" : "Likes" }}
+                
               </span>
             </BaseButton>
 
@@ -297,7 +298,8 @@
   });
 
   const handleLikeClick = async () => {
-    await likeStore.toggleLike(post.value.id);
+    console.log("Post ID in handleLikeClick:", post.value.id); // Log post ID
+  await likeStore.toggleLike(post.value.id);
   };
 
   const isLiked = computed(() =>

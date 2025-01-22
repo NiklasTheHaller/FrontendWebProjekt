@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { likeService } from "@/services/likeService";
+import { useAuthStore} from "@/store/authStore";
 
 export const useLikeStore = defineStore("like", {
   state: () => ({
@@ -31,24 +32,49 @@ export const useLikeStore = defineStore("like", {
     },
 
     async toggleLike(postId) {
-      const userId = "currentUserId"; // Replace with actual user ID from auth
+      const authStore = useAuthStore();
+      const userId = authStore.identifier;
+
+      console.log("Post ID in toggleLike:", postId); // Log postId
+      console.log("User ID in toggleLike:", userId); // Log userId
+
+      if (!userId) {
+        console.error("User not authenticated, cannot toggle like.");
+        return;
+      }
+
       const isLiked = this.isPostLikedByUser(postId, userId);
 
       try {
         if (isLiked) {
-          const likeToDelete = this.likes[postId].find(
+          // Unlike the post
+          const likeToDelete = this.likes[postId]?.find(
             (like) => like.userId === userId
           );
+
+          if (!likeToDelete) {
+            console.error("Like not found for deletion.");
+            return;
+          }
+
+          console.log("Deleting like:", likeToDelete);
           await likeService.deleteLike(likeToDelete.id);
           this.likes[postId] = this.likes[postId].filter(
             (like) => like.userId !== userId
           );
         } else {
-          const newLike = await likeService.createLike(postId);
-          if (!this.likes[postId]) this.likes[postId] = [];
+          // Like the post
+          console.log("Creating like for userId:", userId, "and postId:", postId);
+          const newLike = await likeService.createLike(userId, postId);
+
+          if (!this.likes[postId]) {
+            this.likes[postId] = [];
+          }
+
           this.likes[postId].push(newLike);
         }
       } catch (error) {
+        console.error("Error toggling like:", error.message || error);
         this.error = error.message;
       }
     },

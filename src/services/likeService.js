@@ -9,6 +9,8 @@ export const likeService = {
   },
 
   async createLike(userId, postId) {
+    console.log("Sending createLike payload:", { userId, postId }); // Log the payload
+
     const response = await apiClient.post(`${API_URL}/api/likes`, {
       userId,
       postId,
