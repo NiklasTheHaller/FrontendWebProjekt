@@ -77,14 +77,17 @@
           return;
         }
 
-        const success = await authStore.login(
-          usernameValue.value, // Pass 'username'
-          passwordValue.value
+        const result = await authStore.login(
+            usernameValue.value,
+            passwordValue.value
         );
-        if (success) {
-          router.push("/feed");
+
+        if (result === "locked") {
+          errorMessage.value = "Your account is locked. Please contact support.";
+        } else if (result === false) {
+          errorMessage.value = "Invalid username or password.";
         } else {
-          errorMessage.value = "Invalid username or password";
+          router.push("/feed");
         }
       };
 

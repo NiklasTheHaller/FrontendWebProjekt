@@ -22,7 +22,7 @@
         <td class="px-4 py-2">{{ user.role }}</td>
         <td class="px-4 py-2 text-center space-x-2">
           <button
-              @click="editUser(user)"
+              @click="$emit('edit-user', user)"
               class="px-2 py-1 bg-blue-500 text-white rounded"
           >
             Edit
@@ -35,10 +35,10 @@
               }"
               class="px-2 py-1 text-white rounded"
           >
-            {{ user.locked ? "Locked" : "Lock" }}
+            {{ user.locked ? "Unlock" : "Lock" }}
           </button>
           <button
-              @click="deleteUser(user.id)"
+              @click="confirmDelete(user)"
               class="px-2 py-1 bg-red-500 text-white rounded"
           >
             Delete
@@ -58,6 +58,13 @@ export default {
     lockUser: Function,
     deleteUser: Function,
     editUser: Function,
+  },
+  methods: {
+    confirmDelete(user) {
+      if (confirm(`Are you sure you want to delete ${user.username}?`)) {
+        this.deleteUser(user.id);
+      }
+    },
   },
 };
 </script>

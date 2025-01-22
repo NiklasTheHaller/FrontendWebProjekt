@@ -33,9 +33,22 @@
           :users="filteredUsers"
           :lockUser="userStore.lockUser"
           :deleteUser="userStore.deleteUser"
-          :editUser="userStore.editUser"
-      />
+          @edit-user="openEditModal"
+          ></UserTable>
     </div>
+
+    <!-- Edit User Modal -->
+    <BaseModal
+        v-model="isEditModalVisible"
+        :customClass="['flex items-center justify-center min-h-screen']"
+    >
+      <template #body>
+        <EditUserForm
+            :user="selectedUser"
+            @update-user="handleUserUpdate"
+        />
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -44,35 +57,48 @@ import { ref, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useAllUserStore } from "@/store/allUserStore";
 import UserTable from "@/components/molecules/UserTable.vue";
+import BaseModal from "@/components/atoms/BaseModal.vue";
+import EditUserForm from "@/components/molecules/EditUserForm.vue";
 
 const userStore = useAllUserStore();
 
-// Extract reactive properties from the store
+// Reactive state
 const { users, loading, error } = storeToRefs(userStore);
-
-// State for the search query
 const searchQuery = ref("");
+const isEditModalVisible = ref(false);
+const selectedUser = ref(null);
 
-// Fetch all users when the component mounts
+// Fetch users on mount
 onMounted(async () => {
-  await userStore.fetchAllUsers(); // Ensure data is fetched on mount
+  await userStore.fetchAllUsers();
 });
 
-// Compute sorted users for display
-const sortedUsers = computed(() => {
-  if (!users.value) return []; // Fallback for undefined state
-  return [...users.value].sort(
-      (a, b) => a.username.localeCompare(b.username) // Sort alphabetically by username
-  );
-});
-
-// Filter users based on the search query
+// Filtered users for the table
 const filteredUsers = computed(() => {
   const query = searchQuery.value.toLowerCase();
-  return sortedUsers.value.filter((user) =>
+  return [...users.value].filter((user) =>
       user.username.toLowerCase().includes(query)
   );
 });
+
+// Open modal with selected user
+const openEditModal = (user) => {
+  selectedUser.value = { ...user }; // Shallow copy to avoid mutations
+  isEditModalVisible.value = true;
+};
+
+const handleUserUpdate = async (updatedUser) => {
+  try {
+    console.log("Updated User Data:", updatedUser);
+
+    // Pass the updated user data to the store's editUser method
+    await userStore.editUser(updatedUser);
+
+    // Close the modal after successful update
+    isEditModalVisible.value = false;
+  } catch (error) {
+    console.error("Failed to update user:", error);
+  }
+};
+
 </script>
-
-

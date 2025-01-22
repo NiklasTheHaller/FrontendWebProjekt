@@ -15,6 +15,7 @@ export const useAuthStore = defineStore("authStore", {
     accessToken: null,
     refreshTimer: null,
     identifier: null,
+    username: null,
   }),
   actions: {
     /**
@@ -33,10 +34,19 @@ export const useAuthStore = defineStore("authStore", {
         this.setTokens(response.data.accessToken, response.data.refreshToken);
         return true;
       } catch (error) {
-        console.error("Login failed:", error);
-        return false;
+        if (error.response && error.response.status === 403) {
+          const errorMessage = error.response.data?.message;
+          if (errorMessage && errorMessage.includes("User account is locked")) {
+            console.error("Login failed: User account is locked.");
+            // Add additional handling for locked accounts if needed
+            return "locked"; // Return a specific status for locked accounts
+          }
+        }
+        console.error("Login failed:", error.message);
+        return false; // Return false for all other errors
       }
     },
+
 
     /**
      * Sets the access and refresh tokens in the state and localStorage.
@@ -49,12 +59,14 @@ export const useAuthStore = defineStore("authStore", {
 
       const decoded = jwtDecode(accessToken);
       this.userRole = decoded.role || localStorage.getItem("userRole");
-      this.identifier = decoded.sub|| localStorage.getItem("identifier");
+      this.identifier = decoded.userId|| localStorage.getItem("identifier");
+      this.username = decoded.sub || localStorage.getItem("username");
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userRole", this.userRole);
       localStorage.setItem("identifier", this.identifier);
+      localStorage.setItem("username", this.username);
 
       // Start monitoring token expiration
       this.startRefreshTimer();
@@ -137,7 +149,8 @@ export const useAuthStore = defineStore("authStore", {
           this.isAuthenticated = true
           const decoded = jwtDecode(token);
           this.userRole = decoded.role || localStorage.getItem("userRole");
-          this.identifier = decoded.sub|| localStorage.getItem("identifier");
+          this.username = decoded.sub || localStorage.getItem("username");
+          this.identifier = decoded.userId|| localStorage.getItem("identifier");
           return true; // Return true on success
         }
         return false; // Return true on success
