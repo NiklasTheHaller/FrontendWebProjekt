@@ -64,6 +64,4 @@ npm run lint
 
 Refer to the [Vue CLI Configuration Reference](https://cli.vuejs.org/config/) for further customizations.
 
----
 
-Feel free to extend this README with additional project-specific details as needed.
