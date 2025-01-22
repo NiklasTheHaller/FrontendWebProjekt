@@ -1,24 +1,69 @@
-# semesterproject
+# Semester Project Frontend
 
-## Project setup
-```
+## Description
+
+This project is the frontend for the semester project, built using Vue 3. It includes routing, state management, and modern validation techniques. The application is styled with Tailwind CSS and communicates with the backend using Axios.
+
+## 🗃️ Prerequisites
+
+Ensure the following tools are installed:
+
+- **Node.js**: Version 16 or higher, including npm
+- **Vue CLI**: For frontend development
+- **Git**: For version control
+
+## ⚙️ Technologies
+
+- **Vue 3**: Framework for building the user interface
+- **Vue Router**: For managing routes and navigation
+- **Pinia**: State management
+- **Tailwind CSS**: For styling and layout
+- **Axios**: HTTP client for making API requests
+- **Vee-Validate**: For form validation
+- **Yup**: Schema-based validation library
+- **Lodash**: Utility library for JavaScript
+- **JWT Decode**: To handle JWT tokens
+- **bcryptjs**: For client-side password hashing
+- **Country List**: For handling country data
+
+## 🚀 Project Setup
+
+### Install Dependencies
+
+Install all required dependencies:
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+### Start Development Server
+
+Compiles and hot-reloads for development:
+
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+### Build for Production
+
+Compiles and minifies the application for production:
+
+```bash
 npm run build
 ```
 
-### Lints and fixes files
-```
+### Lint and Fix Files
+
+Lint the codebase and automatically fix any issues:
+
+```bash
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 🛠️ Customize Configuration
+
+Refer to the [Vue CLI Configuration Reference](https://cli.vuejs.org/config/) for further customizations.
+
+---
+
+Feel free to extend this README with additional project-specific details as needed.
