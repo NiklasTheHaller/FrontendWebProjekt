@@ -25,6 +25,7 @@
               id="salutation"
               :options="salutationOptions"
               placeholder="Select salutation"
+              @blur="validateSalutation"
             />
           </div>
 
@@ -39,6 +40,7 @@
               v-model="otherSalutation"
               type="text"
               placeholder="Max 30 characters"
+              @blur="validateOtherSalutation"
             />
             <p
               v-if="otherSalutationError"
@@ -56,6 +58,7 @@
               v-model="usernameValue"
               type="text"
               placeholder="Enter your username"
+              @blur="validateUsername"
             />
             <p
               v-if="usernameError"
@@ -73,6 +76,7 @@
               v-model="emailValue"
               type="email"
               placeholder="example@domain.com"
+              @blur="validateEmail"
             />
             <p
               v-if="emailError"
@@ -89,6 +93,7 @@
               label-text="Password"
               v-model="passwordValue"
               type="password"
+              @blur="validatePassword"
             />
             <p
               v-if="passwordError"
@@ -105,6 +110,7 @@
               label-text="Confirm Password"
               v-model="repeatPasswordValue"
               type="password"
+              @blur="validateRepeatPassword"
             />
             <p
               v-if="repeatPasswordError"
@@ -126,6 +132,7 @@
               :options="formattedCountries"
               placeholder="Select your country"
               :error="countryError"
+              @blur="validateCountry"
             />
             <p
               v-if="countryError"
@@ -153,10 +160,9 @@
   import BaseButton from "@/components/atoms/BaseButton.vue";
   import BaseSelect from "@/components/atoms/BaseSelect.vue";
   import SearchableSelect from "@/components/molecules/SearchableSelect.vue";
-
   import axios from "axios";
   import * as Yup from "yup";
-  import { getNames, getCodes } from "country-list"; // Import country-list package
+  import { getNames, getCodes } from "country-list";
   import router from "@/router";
   import BaseLabel from "@/components/atoms/BaseLabel.vue";
 
@@ -195,14 +201,12 @@
     },
 
     computed: {
-      // Alphabetically sorted countries with DACH countries at the top
       formattedCountries() {
         const dachCountries = [
           { name: "Germany", code: "DE" },
           { name: "Austria", code: "AT" },
           { name: "Switzerland", code: "CH" },
         ];
-        // Get other countries excluding DACH
         const otherCountries = this.countries
           .filter(
             (country) =>
@@ -210,10 +214,9 @@
           )
           .sort((a, b) => a.name.localeCompare(b.name));
 
-        // Format all countries for the select component
         return [...dachCountries, ...otherCountries].map((country) => ({
-          value: country.code, // Use ISO code as value
-          label: country.name, // Show full name as label
+          value: country.code,
+          label: country.name,
         }));
       },
       isFormValid() {
@@ -229,9 +232,7 @@
     },
 
     methods: {
-      // Fetch countries from country-list
       fetchCountries() {
-        // Get all countries with their codes
         const countries = [];
         const names = getNames();
         const codes = getCodes();
@@ -245,7 +246,6 @@
         this.countries = countries;
       },
 
-      // Validate the username
       async validateUsername() {
         try {
           await Yup.string()
@@ -258,7 +258,6 @@
         }
       },
 
-      // Validate the email
       async validateEmail() {
         try {
           await Yup.string()
@@ -271,7 +270,6 @@
         }
       },
 
-      // Validate the password
       async validatePassword() {
         try {
           await Yup.string()
@@ -297,7 +295,6 @@
         }
       },
 
-      // Validate repeat password
       async validateRepeatPassword() {
         try {
           if (this.repeatPasswordValue !== this.passwordValue) {
@@ -310,17 +307,21 @@
         }
       },
 
-      // Validate the "other" salutation field
       async validateOtherSalutation() {
-        if (this.otherSalutation.length > 30) {
-          this.otherSalutationError =
-            "Salutation cannot be more than 30 characters.";
+        if (this.salutation === "other") {
+          if (this.otherSalutation.length === 0) {
+            this.otherSalutationError = "Please specify your salutation.";
+          } else if (this.otherSalutation.length > 30) {
+            this.otherSalutationError =
+              "Salutation cannot be more than 30 characters.";
+          } else {
+            this.otherSalutationError = "";
+          }
         } else {
           this.otherSalutationError = "";
         }
       },
 
-      // Validate country selection
       async validateCountry() {
         if (!this.country || this.country.trim() === "") {
           this.countryError = "Please select a country.";
@@ -329,7 +330,6 @@
         }
       },
 
-      // Handle form submission
       async handleSubmit() {
         // Validate each field before submission
         await this.validateUsername();
@@ -384,8 +384,32 @@
       },
     },
 
+    watch: {
+      usernameValue() {
+        this.validateUsername();
+      },
+      emailValue() {
+        this.validateEmail();
+      },
+      passwordValue() {
+        this.validatePassword();
+      },
+      repeatPasswordValue() {
+        this.validateRepeatPassword();
+      },
+      otherSalutation() {
+        this.validateOtherSalutation();
+      },
+      country() {
+        this.validateCountry();
+      },
+      salutation() {
+        this.validateOtherSalutation();
+      },
+    },
+
     mounted() {
-      this.fetchCountries(); // Fetch country list on component mount
+      this.fetchCountries();
     },
   };
 </script>
